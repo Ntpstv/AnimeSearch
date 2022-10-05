@@ -1,4 +1,4 @@
-source 'https://github.com/CocoaPods/Specs.git'
+#source 'https://github.com/CocoaPods/Specs.git'
 platform :ios, '10.0'
 
 target 'Anime' do
@@ -11,5 +11,7 @@ pod 'Alamofire'
 pod 'AlamofireImage', '~> 4.1'
 pod 'FirebaseAuth'
 pod 'FirebaseFirestore'
+pod 'ProgressHUD'
+pod 'FirebaseStorage'
 
 end

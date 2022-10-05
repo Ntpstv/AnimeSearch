@@ -8,33 +8,37 @@
 import UIKit
 import FirebaseFirestore
 import FirebaseAuth
-//import FirebaseFirestoreSwift
 
-//private let reuseIdentifier = "Cell"
+protocol FavVCDelegate{
+    func didLikeAnime()
+}
+
 class FavVC: UIViewController {
     
+    //MARK: - IBOutlets
     @IBOutlet var uiCollectionView: UICollectionView!
-    //    @IBOutlet weak var noDataLabel: UILabel!
-    @IBOutlet weak var amImage: UIImageView!
-    @IBOutlet weak var amTitle: UILabel!
-    @IBOutlet weak var amDetail: UILabel!
+    @IBOutlet weak var emptyDataView: emptyData!
     
-    //    var delegate: AMDataManagerDelegate?
-    //    var mvTableViewCell = MoviesTableViewCell()
-    let manager = AMDataManager()
+    //MARK: - Vars
+    
+    var movieVC = MoviesVC()
+    var filteredMovies = [Data]()
     var amData = [Data]()
-    var amItem = [Data]()
-    var animeModel: Data?
-    //    var listFromFB = [ItemsFromFB]()
+    let manager = AMDataManager()
     var favVCell = FavViewCell()
-    //    var dataFromFB: [ItemsFromFB] = []
-    var animeModelTemp: [Data] = []
+    var animeModel: Data?
+    var delegate: FavVCDelegate?
     var amInfo: Data!
+    //    var animeModelTemp: [Data] = []
     
     let db = Firestore.firestore()
     
+    
+    //MARK: - View Life Cycles
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        showEmptyDataView(loading:true)
         
         let title = UIImage(named: "FavMoviesTitle.png")
         let imageView = UIImageView(image:title)
@@ -42,70 +46,83 @@ class FavVC: UIViewController {
         
         uiCollectionView.register(FavViewCell.self, forCellWithReuseIdentifier: "FavViewCell")
         
-//        fetchDataFromFB()
-        //        getAMItem()
-        self.uiCollectionView.reloadData()
+//        manager.fetchAM() { result in
+//            switch result{
+//
+//            case .success(let response):
+//
+//                print(response)
+//                self.amData = response
+//
+//                self.uiCollectionView.reloadData()
+//
+//            case .failure(_):
+//                break
+//            }
+
+            fetchIsFavFromDB()
+   
+    }
+    
+    //MARK: - funcs
+    private func showEmptyDataView(loading: Bool){
+        emptyDataView.isHidden = false
+        
+        let imageName = "catIsSoSad"
+        let title = "No Data"
+        let subTitle = "No anime cartoon favorite"
+        
+        emptyDataView.imageView.image = UIImage(named: imageName)
+        emptyDataView.titleLabel.text = title
+        emptyDataView.subtitleLabel.text = subTitle
         
     }
     
-//    func fetchDataFromFB(){
-//        db.collection("Favorite")
-//            .order(by: "date")
-//            .addSnapshotListener(){ (querySnapshot, error) in
-//
-//                self.animeModelTemp = []
-//
-//                if let e = error {
-//                    print("There was an issue retrieving the data \(e)")
-//                }else{
-//                    if let snapshotDocuments = querySnapshot?.documents{
-//                        for doc in snapshotDocuments{
-//                            var data = doc.data()
-//                            print("this is  the save one \(doc.data())")
-//
-//                            if let a = data["mal_id"] as? String {
-//                                malIDs.append(a)
-//                            }
-////                            if let animeTemp = self.animeModel{
-////
-////                                data["Title"] = animeTemp.title ?? ""
-////                                data["Synopsis"] = animeTemp.synopsis ?? ""
-////                                data["Image"] = animeTemp.images?.jpg?.image_url ?? ""
-////                                data["mal_id"] = animeTemp.mal_id
-////                                data["url"] = animeTemp.url ?? ""
-////                                data["score"] = animeTemp.score ?? 0.0;  {
-////
-////                                    let anime = Data(mal_id: animeTemp.mal_id, url: animeTemp.url, images: animeTemp.images, score: Double(animeTemp.score!), title: animeTemp.title, synopsis: animeTemp.synopsis)
-////
-////                                    self.animeModelTemp.append(anime)
-////
-////                                    DispatchQueue.main.async {
-////                                        self.uiCollectionView.reloadData()
-//                                    }
-//                                }
-//                            }
-//                        }
-//                    }
-                    //    func getAMItem() {
-                    //        manager.fetchAM(){(result) in
-                    //            switch result{
-                    //
-                    //            case .success(let response):
-                    //                print(response)
-                    //                self.amData = response
-                    //                self.amItem = response
-                    //
-                    //                self.uiCollectionView.reloadData()
-                    //
-                    //
-                    //            case .failure(let error):
-                    //                print(error.localizedDescription)
-                    //
+    func fetchIsFavFromDB(){
+        
+        guard let userID = Auth.auth().currentUser?.email else { return }
+        
+        db.collection(userID)
+            .order(by: kDATE)
+            .getDocuments() { (querySnapshot, error) in
+
+                if let e = error {
+                    print("There was an issue retriving data from Firestore. \(e)")
+                }else{
+                    if let snapshotDocuments = querySnapshot?.documents {
+                        for doc in snapshotDocuments {
+                            
+                            let data = doc.data()
+                            
+                            if let titleTemp = data[kTITLE] as? String,
+//                               let imagesTemp = data[kIMAGES] as? String,
+                               let synopsisTemp = data[kSYNOPSIS] as? String{
+                                
+                                for (index, movieTemp) in self.amData.enumerated(){
+                                    if movieTemp.title == titleTemp,
+//                                       movieTemp.images == imagesTemp,
+                                       movieTemp.synopsis == synopsisTemp {
+                                        
+                                        self.amData[index].isFavorite = true
+//                                        self.filteredMovies[index].isFavorite = true
+                                        
+                                        
+                                    }
+                                 
+//                                    self.moviesFromAPI.filter({$0.title == titleTemp})
+//                                    querySnapshot.isfavorite == true
+                                }
+                              
+                            }
+                            
+                        }
+                    }
                 }
-                
-//            }
-//    }
-//}
+            }
+    }
+}
+
+
 
 
 
@@ -136,17 +153,15 @@ extension FavVC: UICollectionViewDelegate, UICollectionViewDataSource {
         
         return cell
     }
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         
-        let thirdVC = storyboard?.instantiateViewController(withIdentifier: "DetailVC") as! DetailVC
-        
-        //FIXME: - check again
-        let item = amData[indexPath.row]
-        thirdVC.amInfo = item
-        
-        self.navigationController?.pushViewController(thirdVC, animated: true)
-        
+        if let thirdVC = storyboard?.instantiateViewController(withIdentifier: "DetailVC") as? DetailVC{
+            
+            thirdVC.amInfo = amData[indexPath.row]
+            self.navigationController?.pushViewController(thirdVC, animated: true)
+        }
     }
     
 }

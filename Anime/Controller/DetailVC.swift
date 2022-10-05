@@ -41,9 +41,7 @@ class DetailVC: UIViewController {
         
         
     }
-//    func favOrUnfavShow(){
-//        if mvTableViewCell.starButton
-//    }
+
     @IBAction func backBTPressed(_ sender: UIButton) {
         navigationController?.popViewController(animated: true)
 
@@ -61,16 +59,7 @@ class DetailVC: UIViewController {
      present(vc, animated: true)
     }
     
-//    func favOrUnfavShow(){
-//
-//
-//        if ((mvTableViewCell?.starButton) != nil) == isTapped {
-//            addFav.isHidden
-//        } else{
-//            unFav.isHidden
-//        }
-//
-//    }
+
     
     @IBAction func addFoviteButton(_ sender: UIButton) {
         isTapped = !isTapped
@@ -94,27 +83,7 @@ class DetailVC: UIViewController {
     }
         }
     }
-//
-//        func unFavoriteButton(_ sender: UIButton) {
-//    }
-//
-//    func storedDataInFS(){
-//
-//        if let animeTemp = animeModel {
-//            var request = [String: Any]()
-//            request["mal_id"] = animeTemp.mal_id
-//            request["title"] = animeTemp.title
-//            request["synopsis"] = animeTemp.synopsis
-//            request["images"] = animeTemp.images?.jpg?.image_url
-//            request["url"] = animeTemp.url
-//            request["score"] = animeTemp.score
-//            request["date"] = Date().timeIntervalSince1970
-//
-//
-//            db.collection("Favorite").addDocument(data: request)
-//
-//        }
-//    }
+
 }
 
 

@@ -17,9 +17,9 @@ class FavViewCell: UICollectionViewCell {
 //    var itemsFromFireBase: ItemsFromFB?
     
     func setView(animeDetail: Data){
-        amTitle.text = animeDetail.title
-        amDetail.text = animeDetail.synopsis
-        amImage.imageFromUrl(urlString: animeDetail.images?.jpg?.image_url ?? "")
+        amTitle?.text = animeDetail.title
+        amDetail?.text = animeDetail.synopsis
+        amImage?.imageFromUrl(urlString: animeDetail.images?.jpg?.image_url ?? "")
 //        itemsFromFireBase = animeDetail
     }
     

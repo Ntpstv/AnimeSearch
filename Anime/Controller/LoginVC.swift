@@ -7,17 +7,31 @@
 
 import UIKit
 import FirebaseAuth
+import FirebaseFirestore
+import ProgressHUD
 
 
 class LoginVC: UIViewController {
     
+    //MARK: - IBOutlets
+    
+    @IBOutlet var backgroundView: UIView!
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
-    @IBOutlet weak var errorLabel: UILabel!
+    
+    //MARK: - Var
+    var db = Firestore.firestore()
+    var animeModel: Data?
+    
+    
+    //MARK: - ViewLifeCycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        overrideUserInterfaceStyle = .light
+        setupBackgroundTouch()
         
         navigationItem.hidesBackButton = true
         
@@ -33,55 +47,64 @@ class LoginVC: UIViewController {
             charIndex += 1
             
         }
-        
-        isStayedLoggedIn()
+
     }
+    
+    
+    //MARK: - IBActions
     
     @IBAction func loginButtonPressed(_ sender: UIButton) {
-        
-        let email    = emailTextField.text!.trimmingCharacters(in: .whitespacesAndNewlines)
-        let password = passwordTextField.text!.trimmingCharacters(in: .whitespacesAndNewlines)
-        
-        Auth.auth().signIn(withEmail: email, password: password) { authResult, error in
-            
-            if error != nil {
-                
-                self.errorLabel.text = error!.localizedDescription
-                self.errorLabel.alpha = 1
-                
-            } else {
-                
-                self.emailTextField.text = ""
-                self.passwordTextField.text = ""
 
-                let goToMoviesVC = self.storyboard?.instantiateViewController(withIdentifier: "Nav_MoviesVC")
+            
+        let email = emailTextField.text!.trimmingCharacters(in: .whitespacesAndNewlines)
+              let password = passwordTextField.text!.trimmingCharacters(in: .whitespacesAndNewlines)
+              
+              Auth.auth().signIn(withEmail: email, password: password) { authResult, error in
+                  
+                  if error != nil {
                     
-                    self.present(goToMoviesVC!, animated: true )
-                    //                self.navigationController?.pushViewController(goToMoviesVC!, animated: true)
-                    
-                    
-                    //                self.performSegue(withIdentifier: K.loginSegue, sender: self)
-                
+                      ProgressHUD.showError(error!.localizedDescription)
+                     
+                  } else {
+
+                      self.emailTextField.text = ""
+                      self.passwordTextField.text = ""
+                      
+                      self.goToApp()
+            
             }
+            
         }
+        
+    }
+
+    //MARK: - Setup
+    
+    private func setupBackgroundTouch() {
+        
+        backgroundView.isUserInteractionEnabled = true
+        backgroundView.isUserInteractionEnabled = true
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(backgroundTap))
+        backgroundView.addGestureRecognizer(tapGesture)
     }
     
-    func isStayedLoggedIn() {
-        
-        Auth.auth().addStateDidChangeListener { auth, user in
-            if Auth.auth().currentUser != nil {
-                let storyboard = UIStoryboard(name: "Main", bundle: nil)
-            
-                let goToMoviesVC = storyboard.instantiateViewController(withIdentifier: "Nav_MoviesVC")
-                    goToMoviesVC.modalPresentationStyle = . fullScreen
-                    self.present(goToMoviesVC, animated: true)
-
-                
-            }
-            //        return UserDefaults.standard.bool(forKey: "isStayLoggedIn")
-        }
+    @objc func backgroundTap(){
+        print("tap")
+        dismissKeyboard()
     }
+    
+    //MARK: - Helpers
+    private func dismissKeyboard(){
+        self.view.endEditing(false)
+        
+    }
+    private func goToApp(){
+        
+        let mainView = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "Nav_MoviesVC")
+        
+        self.present(mainView, animated: true)
+        
+    }
+
 }
-
-
 

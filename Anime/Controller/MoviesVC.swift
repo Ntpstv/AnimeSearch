@@ -10,9 +10,11 @@ import CoreData
 import Alamofire
 import FirebaseAuth
 import FirebaseFirestore
+import ProgressHUD
 
 
 class MoviesVC: UIViewController, UITextFieldDelegate, AMDataManagerDelegate {
+    
     func didUpdateAMData(_nytDataManager: AMDataManager, Results: Data) {
         
     }
@@ -20,10 +22,13 @@ class MoviesVC: UIViewController, UITextFieldDelegate, AMDataManagerDelegate {
     func didFailWithError(error: Error) {
         
     }
+    //MARK: - IBOutlets
+    
     @IBOutlet weak var movieListTV: UITableView!
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var bookMark: UIBarButtonItem!
     
+    //MARK: - Vars
     private var search: [AMData] = []
     let manager = AMDataManager()
     var filteredMovies = [Data]()
@@ -32,15 +37,20 @@ class MoviesVC: UIViewController, UITextFieldDelegate, AMDataManagerDelegate {
     var animeNameTextField: UITextField!
     var delegate: AMDataManagerDelegate?
     var animeModel: Data?
-    var isTapped: Bool = false
     
     let animeURL = "https://api.jikan.moe/v4/anime?"
     var url = "https://cdn.myanimelist.net/images/anime/7/57855.jpg"
     
     let db = Firestore.firestore()
     
+    
+    //MARK: - View Life Cycles
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        ProgressHUD.show()
         self.navigationController?.isNavigationBarHidden = false
         
         let title = UIImage(named: "AMMovie.png")
@@ -48,22 +58,27 @@ class MoviesVC: UIViewController, UITextFieldDelegate, AMDataManagerDelegate {
         self.navigationItem.titleView = imageView
         getAMItem()
         
+        
+        
         animeNameTextField?.delegate = self
         searchBar.delegate = self
         
-        self.movieListTV.reloadData()
+        //        self.movieListTV.reloadData()
         //        loadAnimeFromBookmarkSearch()
     }
     
     
+    //MARK: - log out
     @IBAction func logOutButton(_ sender: UIButton) {
-        //        let auth = Auth.auth()
         
         do {
             try Auth.auth().signOut()
             
-            dismiss(animated: true, completion: nil)
-            print("log out btn is pressed")
+            let loginView = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "Nav_Login")
+            DispatchQueue.main.async {
+                loginView.modalPresentationStyle = .fullScreen
+                self.present(loginView, animated: true)
+            }
             
         } catch let signOutError as NSError {
             print("Error signing out: %@", signOutError)
@@ -71,7 +86,7 @@ class MoviesVC: UIViewController, UITextFieldDelegate, AMDataManagerDelegate {
     }
     
     
-    //MARK: - textfield delegate
+    //MARK: - BookMark
     @IBAction func bookmarkPressed(_ sender: UIBarButtonItem) {
         
         let alert = UIAlertController(title: "Movies name", message: "Please enter movie name", preferredStyle: .alert)
@@ -97,11 +112,6 @@ class MoviesVC: UIViewController, UITextFieldDelegate, AMDataManagerDelegate {
     
     private func okHandler(action: UIAlertAction) -> Void {
         
-        //    if let text = animeNameTextField.text, !text.isEmpty {
-        //        storeDataFromBM()
-        //    } else {
-        //        return
-        //    }
         
         guard let text = animeNameTextField.text, !text.isEmpty else{
             return
@@ -109,18 +119,7 @@ class MoviesVC: UIViewController, UITextFieldDelegate, AMDataManagerDelegate {
         
         searchInBookmark()
         
-        //
-        //    isTapped = !isTapped
-        //
-        //
-        //    if isTapped {
-        //
-        //        storeDataFromBM()
-        //
-        //    } else {
-        //
-        //print("data is not saved")
-        //
+        
         //    }
         self.movieListTV.reloadData()
         
@@ -139,7 +138,7 @@ class MoviesVC: UIViewController, UITextFieldDelegate, AMDataManagerDelegate {
                 print(response)
                 self.filteredMovies = response
                 self.moviesFromAPI = response
-                
+                self.fetchIsFavFromDB()
                 self.movieListTV.reloadData()
                 
                 
@@ -151,15 +150,18 @@ class MoviesVC: UIViewController, UITextFieldDelegate, AMDataManagerDelegate {
     }
 }
 
-//MARK: - TableView Delegate
+//MARK: - TableView Delegate /FetchIsFevToMoviesVC
+
 extension MoviesVC: UITableViewDelegate, UITableViewDataSource{
     
-    func fetchDataFromFB(){
-        db.collection("Favorite")
+    func fetchIsFavFromDB(){
+        
+        ProgressHUD.dismiss()
+        
+        guard let user = Auth.auth().currentUser?.email else { return }
+        db.collection(user)
             .order(by: "date")
-            .addSnapshotListener(){ (querySnapshot, error) in
-                
-//                self.animeModelTemp = []
+            .getDocuments(completion: {querySnapshot, error in
                 
                 if let e = error {
                     print("There was an issue retrieving the data \(e)")
@@ -167,32 +169,29 @@ extension MoviesVC: UITableViewDelegate, UITableViewDataSource{
                     if let snapshotDocuments = querySnapshot?.documents{
                         for doc in snapshotDocuments{
                             let data = doc.data()
+                            
                             print("this is  the save one \(doc.data())")
                             
                             if let malIDTemp = data["mal_id"] as? Int {
-//                                self.moviesFromAPI.filter({$0.mal_id == malIDTemp}).first?.isFavorite = true
+                                
                                 for (index, movieTemp) in self.moviesFromAPI.enumerated(){
                                     if movieTemp.mal_id == malIDTemp {
                                         self.moviesFromAPI[index].isFavorite = true
                                         self.filteredMovies[index].isFavorite = true
                                     }
                                 }
-                                
-                                
-//                                filteredMalID.isFavorite = true
-//                               print(filteredMalID.isFavorite)
-                                print(self.moviesFromAPI.filter({$0.mal_id == malIDTemp}).first?.isFavorite)
-                                self.moviesFromAPI.filter({$0.mal_id == malIDTemp})
-//                                $0.isfavorite == true
                             }
-
+                            
                         }
+                        self.movieListTV?.reloadData()
                     }
+                    
                 }
-                self.movieListTV.reloadData()
-            }
+                
+            })
     }
     
+    //MARK: - Fetch Alamofire Data
     func getAMItem() {
         manager.fetchAM(){(result) in
             switch result{
@@ -201,9 +200,7 @@ extension MoviesVC: UITableViewDelegate, UITableViewDataSource{
                 print(response)
                 self.filteredMovies = response
                 self.moviesFromAPI = response
-                self.fetchDataFromFB()
-               
-                
+                self.fetchIsFavFromDB()
                 
             case .failure(let error):
                 print(error.localizedDescription)
@@ -213,6 +210,7 @@ extension MoviesVC: UITableViewDelegate, UITableViewDataSource{
         }
     }
     
+    //MARK: - TableView
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
@@ -231,8 +229,7 @@ extension MoviesVC: UITableViewDelegate, UITableViewDataSource{
             return cell
             
         }
-        //                movieListTV.reloadData()
-        //        cell.starButton.addTarget(self, action: #selector(moviesTableViewCell.starIsTapped(_:)), for: .touchUpInside)
+        
         
         return UITableViewCell()
         
@@ -244,26 +241,18 @@ extension MoviesVC: UITableViewDelegate, UITableViewDataSource{
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        //         let cell = tableView.cellForRow(at: indexPath) as! MoviesTableViewCell
-        //        cell.starButton.image = UIImage(systemName: "star.fill")
-        //        isTapped != nil
-        //        print("unfav")
-        //
-        
         movieListTV.deselectRow(at: indexPath, animated: true)
         
         if let thirdVC = storyboard?.instantiateViewController(withIdentifier: "DetailVC") as? DetailVC {
             
             thirdVC.amInfo = filteredMovies[indexPath.row]
-            //
-            //        thirdVC.amInfo = item
             
             self.navigationController?.pushViewController(thirdVC, animated: true)
         }
     }
 }
 
-//MARK: - searchbar delegate
+//MARK: - Extension Delegates
 
 extension MoviesVC: UISearchBarDelegate {
     
@@ -290,3 +279,21 @@ extension MoviesVC: UISearchBarDelegate {
         
     }
 }
+
+extension MoviesVC: MoviesTableViewCellDelegate {
+    func didLikeAnime() {
+        
+    }
+    
+    func didDislikeAnime() {
+        
+    }
+    
+    func fetchDataFromCell() {
+        //        getAMItem()
+    }
+    
+    
+    
+}
+
