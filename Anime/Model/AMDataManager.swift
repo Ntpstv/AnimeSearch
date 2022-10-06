@@ -20,7 +20,7 @@ struct AMDataManager{
     var delegate: AMDataManagerDelegate?
 //    var amData = [Data]()
     
-    let animeURL = "https://api.jikan.moe/v4/anime?"
+    let animeURL = "https://api.jikan.moe/v4/anime"
     
     func fetchAM(completion: @escaping (Result<[Data], Error>)-> Void){
 //        https://api.jikan.moe/v4/anime?q=xxxxxx
@@ -49,7 +49,7 @@ struct AMDataManager{
         guard !query.trimmingCharacters(in: .whitespaces).isEmpty else {
             return
         }
-        let urlString = "\(animeURL)q=\(query)" 
+        let urlString = "\(animeURL)?q=\(query)"
         guard let url = URL(string: urlString) else {
             return
         }

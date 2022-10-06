@@ -32,6 +32,7 @@ class MoviesVC: UIViewController, UITextFieldDelegate, AMDataManagerDelegate {
     private var search: [AMData] = []
     let manager = AMDataManager()
     var filteredMovies = [Data]()
+    var fetchFromDB = [Data]()
     var moviesFromAPI = [Data]()
     var moviesTableViewCell = MoviesTableViewCell()
     var animeNameTextField: UITextField!
@@ -68,7 +69,8 @@ class MoviesVC: UIViewController, UITextFieldDelegate, AMDataManagerDelegate {
     }
     
     
-    //MARK: - log out
+    //MARK: - IBActions
+    
     @IBAction func logOutButton(_ sender: UIButton) {
         
         do {
@@ -85,6 +87,18 @@ class MoviesVC: UIViewController, UITextFieldDelegate, AMDataManagerDelegate {
         }
     }
     
+    @IBAction func FavoriteBtnPressed(_ sender: UIButton) {
+        
+        if let goToFav = storyboard?.instantiateViewController(withIdentifier: "FavVC") as? FavVC  {
+            
+            goToFav.filteredMovies = moviesFromAPI.filter({$0.isFavorite == true})
+            self.navigationController?.pushViewController(goToFav, animated: true)
+            
+        }
+        
+        
+        
+    }
     
     //MARK: - BookMark
     @IBAction func bookmarkPressed(_ sender: UIBarButtonItem) {
@@ -137,7 +151,6 @@ class MoviesVC: UIViewController, UITextFieldDelegate, AMDataManagerDelegate {
             case .success(let response):
                 print(response)
                 self.filteredMovies = response
-                self.moviesFromAPI = response
                 self.fetchIsFavFromDB()
                 self.movieListTV.reloadData()
                 
@@ -167,16 +180,27 @@ extension MoviesVC: UITableViewDelegate, UITableViewDataSource{
                     print("There was an issue retrieving the data \(e)")
                 }else{
                     if let snapshotDocuments = querySnapshot?.documents{
+                        
+                        self.fetchFromDB = [Data]()
+                        
                         for doc in snapshotDocuments{
+                            
                             let data = doc.data()
+                            self.fetchFromDB.append(Data.convertJSONToData(dictionary: data))
                             
                             print("this is  the save one \(doc.data())")
                             
-                            if let malIDTemp = data["mal_id"] as? Int {
-                                
+                            if let malIDTemp = data[kMALID] as? Int {
+                           
                                 for (index, movieTemp) in self.moviesFromAPI.enumerated(){
                                     if movieTemp.mal_id == malIDTemp {
+                                        
                                         self.moviesFromAPI[index].isFavorite = true
+                                    }
+                                }
+                                for (index, movieTemp) in self.filteredMovies.enumerated(){
+                                    if movieTemp.mal_id == malIDTemp {
+                                       
                                         self.filteredMovies[index].isFavorite = true
                                     }
                                 }
@@ -283,14 +307,21 @@ extension MoviesVC: UISearchBarDelegate {
 
 extension MoviesVC: MoviesTableViewCellDelegate {
     //FIXME: change the func name
+   
     func didLikeAnime(animeMalID: Int, animeIsFav: Bool) {
         for (index, movieTemp) in filteredMovies.enumerated(){
             if movieTemp.mal_id == animeMalID {
                 filteredMovies[index].isFavorite = animeIsFav
             }
         }
+        for (index, movieTemp) in moviesFromAPI.enumerated(){
+            if movieTemp.mal_id == animeMalID {
+                moviesFromAPI[index].isFavorite = animeIsFav
+            }
+        }
     }
-
+    
+    
     func didDislikeAnime() {
         
     }

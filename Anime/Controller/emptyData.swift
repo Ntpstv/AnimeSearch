@@ -30,6 +30,7 @@ class emptyData: UIView {
     
     private func commonInit(){
         
+        
         Bundle.main.loadNibNamed("emptyData", owner: self)
         addSubview(contentView)
         contentView.frame = self.bounds

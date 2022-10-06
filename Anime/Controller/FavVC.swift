@@ -29,6 +29,7 @@ class FavVC: UIViewController {
     var animeModel: Data?
     var delegate: FavVCDelegate?
     var amInfo: Data!
+    var fetchFromDB = [Data]()
     //    var animeModelTemp: [Data] = []
     
     let db = Firestore.firestore()
@@ -38,34 +39,21 @@ class FavVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        showEmptyDataView(loading:true)
+        fetchIsFavFromDB()
+        
+        
         
         let title = UIImage(named: "FavMoviesTitle.png")
         let imageView = UIImageView(image:title)
         self.navigationItem.titleView = imageView
         
-        uiCollectionView.register(FavViewCell.self, forCellWithReuseIdentifier: "FavViewCell")
         
-//        manager.fetchAM() { result in
-//            switch result{
-//
-//            case .success(let response):
-//
-//                print(response)
-//                self.amData = response
-//
-//                self.uiCollectionView.reloadData()
-//
-//            case .failure(_):
-//                break
-//            }
-
-            fetchIsFavFromDB()
    
     }
     
     //MARK: - funcs
-    private func showEmptyDataView(loading: Bool){
+    private func showEmptyDataView(){
+        
         emptyDataView.isHidden = false
         
         let imageName = "catIsSoSad"
@@ -90,32 +78,20 @@ class FavVC: UIViewController {
                     print("There was an issue retriving data from Firestore. \(e)")
                 }else{
                     if let snapshotDocuments = querySnapshot?.documents {
+                        
+                        self.fetchFromDB = [Data]()
+                        
                         for doc in snapshotDocuments {
                             
                             let data = doc.data()
-                            
-                            if let titleTemp = data[kTITLE] as? String,
-//                               let imagesTemp = data[kIMAGES] as? String,
-                               let synopsisTemp = data[kSYNOPSIS] as? String{
-                                
-                                for (index, movieTemp) in self.amData.enumerated(){
-                                    if movieTemp.title == titleTemp,
-//                                       movieTemp.images == imagesTemp,
-                                       movieTemp.synopsis == synopsisTemp {
-                                        
-                                        self.amData[index].isFavorite = true
-//                                        self.filteredMovies[index].isFavorite = true
-                                        
-                                        
-                                    }
-                                 
-//                                    self.moviesFromAPI.filter({$0.title == titleTemp})
-//                                    querySnapshot.isfavorite == true
-                                }
-                              
-                            }
-                            
+                            self.fetchFromDB.append(Data.convertJSONToData(dictionary: data))
                         }
+                        
+                        if self.fetchFromDB.isEmpty{
+                            self.showEmptyDataView()
+                        }
+                        
+                        self.uiCollectionView.reloadData()
                     }
                 }
             }
@@ -138,15 +114,15 @@ extension FavVC: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        return amData.count
+        return fetchFromDB.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FavViewCell", for: indexPath) as! FavViewCell
         
-        if indexPath.row < amData.count{
+        if indexPath.row < fetchFromDB.count{
             
-            let listFBTemp = amData[indexPath.row]
+            let listFBTemp = fetchFromDB[indexPath.row]
             cell.setView(animeDetail: listFBTemp)
             return cell
         }
@@ -159,7 +135,7 @@ extension FavVC: UICollectionViewDelegate, UICollectionViewDataSource {
         
         if let thirdVC = storyboard?.instantiateViewController(withIdentifier: "DetailVC") as? DetailVC{
             
-            thirdVC.amInfo = amData[indexPath.row]
+            thirdVC.amInfo = filteredMovies[indexPath.row]
             self.navigationController?.pushViewController(thirdVC, animated: true)
         }
     }

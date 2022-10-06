@@ -37,6 +37,56 @@ struct Data: Codable {
         
         return request
     }
+    
+//    static func convertArrayJSONToDataList(arrayJSON: [[String: Any]]) -> [Data] {
+//        var datas = [Data]()
+//
+//        for dictionary in arrayJSON {
+//
+//            datas.append(Data.convertJSONToData(dictionary: dictionary))
+//            
+//        }
+//
+//        return datas
+//
+//    }
+    
+    
+    static func convertJSONToData(dictionary: [String: Any]) -> Data {
+        
+        var data = Data()
+        
+        if let malIDTemp = dictionary[kMALID] as? Int{
+            data.mal_id = malIDTemp
+        }
+        
+        if let urlTemp = dictionary[kURL] as? String{
+            data.url = urlTemp
+        }
+        if let imageTemp = dictionary[kIMAGES] as? String{
+            data.images =  Images(jpg: Jpg(image_url: imageTemp))
+            
+        }
+        if let scoreTemp = dictionary[kSCORE] as? Double {
+            data.score = scoreTemp
+        }
+        if let titleTemp = dictionary[kTITLE] as? String{
+            data.title = titleTemp
+        }
+        if let synopsisTemp = dictionary[kSYNOPSIS] as? String{
+            data.synopsis = synopsisTemp
+        }
+        if let isFavoriteTemp = dictionary[kISFAVORITE] as? Bool{
+            data.isFavorite = isFavoriteTemp
+        }
+            
+            
+        return data
+        
+        
+    }
+    
+    
 }
 
     struct Images: Codable {
