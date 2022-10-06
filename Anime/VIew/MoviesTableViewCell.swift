@@ -11,7 +11,7 @@ import FirebaseFirestore
 import ProgressHUD
 
 protocol MoviesTableViewCellDelegate {
-    func didLikeAnime()
+    func didLikeAnime(animeMalID: Int, animeIsFav: Bool)
     func didDislikeAnime()
     func fetchDataFromCell()
 }
@@ -60,13 +60,12 @@ class MoviesTableViewCell: UITableViewCell {
 //    }
     
     func setDetail(animeInfo: Data){
-       
-        
         mvTitleLabel.text = animeInfo.title
         mvDetailLabel.text = animeInfo.synopsis
         mvImage.imageFromUrl(urlString: animeInfo.images?.jpg?.image_url ?? "")
         scoreLabel.text = "Score: \(animeInfo.score ?? 0)/10"
         animeModel = animeInfo
+        
         
         if let isFavoriteTemp = animeInfo.isFavorite, isFavoriteTemp {
             isTapped = isFavoriteTemp
@@ -86,10 +85,12 @@ class MoviesTableViewCell: UITableViewCell {
     @IBAction func starIsTapped(_ sender: UIButton) {
 
         isTapped = !isTapped
-
+        delegate?.didLikeAnime(animeMalID:  animeModel?.mal_id ?? 0, animeIsFav: isTapped)
+        
         if isTapped {
 
             sender.setImage(UIImage(systemName: "star.fill"), for: .normal)
+           
             storedDataInFS()
         }else{
 

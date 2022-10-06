@@ -192,9 +192,6 @@
                                                 <buttonConfiguration key="configuration" style="plain" title=" Favorite Movies">
                                                     <fontDescription key="titleFontDescription" type="system" pointSize="15"/>
                                                 </buttonConfiguration>
-                                                <connections>
-                                                    <segue destination="LGb-f5-1gN" kind="show" id="e93-gn-S5Q"/>
-                                                </connections>
                                             </button>
                                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="star.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="sX2-qV-RQm">
                                                 <rect key="frame" x="36" y="55.5" width="27" height="28"/>

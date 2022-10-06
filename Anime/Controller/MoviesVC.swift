@@ -225,6 +225,7 @@ extension MoviesVC: UITableViewDelegate, UITableViewDataSource{
             
             let item = filteredMovies[indexPath.row]
             cell.setDetail(animeInfo: item)
+            cell.delegate = self
             
             return cell
             
@@ -281,10 +282,15 @@ extension MoviesVC: UISearchBarDelegate {
 }
 
 extension MoviesVC: MoviesTableViewCellDelegate {
-    func didLikeAnime() {
-        
+    //FIXME: change the func name
+    func didLikeAnime(animeMalID: Int, animeIsFav: Bool) {
+        for (index, movieTemp) in filteredMovies.enumerated(){
+            if movieTemp.mal_id == animeMalID {
+                filteredMovies[index].isFavorite = animeIsFav
+            }
+        }
     }
-    
+
     func didDislikeAnime() {
         
     }
