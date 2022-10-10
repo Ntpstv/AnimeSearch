@@ -11,7 +11,7 @@ public let userDefaults = UserDefaults.standard
 public let kREGISTERSEGUE = "registerToLoginVC"
 public let kLOGINSEGUE    = "loginToMoviesVC"
 
-public let kOBJECTID = "objecId"
+//public let kOBJECTID = "objecId"
 public var kEMAIL = "email"
 public let kISFAVORITE = "isFavorite"
 public let kMALID = "mal_id"

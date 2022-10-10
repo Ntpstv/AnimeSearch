@@ -13,7 +13,7 @@ import FirebaseFirestore
 import ProgressHUD
 
 
-class MoviesVC: UIViewController, UITextFieldDelegate, AMDataManagerDelegate {
+class MoviesVC: UIViewController, UITextFieldDelegate, AMDataManagerDelegate{
     
     func didUpdateAMData(_nytDataManager: AMDataManager, Results: Data) {
         
@@ -173,7 +173,7 @@ extension MoviesVC: UITableViewDelegate, UITableViewDataSource{
         
         guard let user = Auth.auth().currentUser?.email else { return }
         db.collection(user)
-            .order(by: "date")
+            .order(by: kDATE)
             .getDocuments(completion: {querySnapshot, error in
                 
                 if let e = error {
@@ -270,8 +270,9 @@ extension MoviesVC: UITableViewDelegate, UITableViewDataSource{
         
         if let thirdVC = storyboard?.instantiateViewController(withIdentifier: "DetailVC") as? DetailVC {
             
+            thirdVC.delegate = self
             thirdVC.amInfo = filteredMovies[indexPath.row]
-            
+//            thirdVC.setDetail(animeInfo: filteredMovies[indexPath.row])
             self.navigationController?.pushViewController(thirdVC, animated: true)
         }
     }
@@ -306,9 +307,8 @@ extension MoviesVC: UISearchBarDelegate {
 }
 
 extension MoviesVC: MoviesTableViewCellDelegate {
-    //FIXME: change the func name
    
-    func didLikeAnime(animeMalID: Int, animeIsFav: Bool) {
+    func favoriteIsTriggered(animeMalID: Int, animeIsFav: Bool) {
         for (index, movieTemp) in filteredMovies.enumerated(){
             if movieTemp.mal_id == animeMalID {
                 filteredMovies[index].isFavorite = animeIsFav
@@ -321,16 +321,12 @@ extension MoviesVC: MoviesTableViewCellDelegate {
         }
     }
     
-    
-    func didDislikeAnime() {
+  
+    func fetchDataFromCell() {
         
     }
-    
-    func fetchDataFromCell() {
-        //        getAMItem()
-    }
-    
-    
-    
-}
 
+}
+extension MoviesVC: DetailVCDelegate {
+
+}

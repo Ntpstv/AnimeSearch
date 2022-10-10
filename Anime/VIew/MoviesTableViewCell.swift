@@ -8,11 +8,11 @@
 import FirebaseAuth
 import UIKit
 import FirebaseFirestore
+import FirebaseStorage
 import ProgressHUD
 
 protocol MoviesTableViewCellDelegate {
-    func didLikeAnime(animeMalID: Int, animeIsFav: Bool)
-    func didDislikeAnime()
+    func favoriteIsTriggered(animeMalID: Int, animeIsFav: Bool)
     func fetchDataFromCell()
 }
 
@@ -33,15 +33,12 @@ class MoviesTableViewCell: UITableViewCell {
     var isTapped = false
     var movieTableView: MoviesVC?
     var loginVC: LoginVC?
+    var detailVC: DetailVC?
     var delegate: MoviesTableViewCellDelegate?
-    
-    //    var dataFromFB: [ItemsFromFB] = []
-    //    var listFromFB = [ItemsFromFB]()
-    //    var id: String? = UUID().uuidString
-    
     let url = URL(string: "https://cdn.myanimelist.net/images/anime/7/57855.jpg")
     var db = Firestore.firestore()
     var storeFavoriteItems: [AMData] = []
+    
     
     
     //MARK: - ViewLifeCycles
@@ -50,15 +47,9 @@ class MoviesTableViewCell: UITableViewCell {
         
     
     }
-    
-    
-    
+
     //MARK: - Set isFavorite
-//    override func setSelected(_ selected: Bool, animated: Bool) {
-//        super.setSelected(selected, animated: animated)
-//
-//    }
-    
+
     func setDetail(animeInfo: Data){
         mvTitleLabel.text = animeInfo.title
         mvDetailLabel.text = animeInfo.synopsis
@@ -70,11 +61,10 @@ class MoviesTableViewCell: UITableViewCell {
         if let isFavoriteTemp = animeInfo.isFavorite, isFavoriteTemp {
             isTapped = isFavoriteTemp
             starButton.setImage(UIImage(systemName: "star.fill"), for: .normal)
-         
+
         }else{
             isTapped = false
             starButton.setImage(UIImage(systemName: "star"), for: .normal)
-           
         }
         if animeInfo.mal_id == 1{
             print("animeInfo.isFavorite: \(animeInfo.isFavorite ?? false)" )
@@ -85,7 +75,7 @@ class MoviesTableViewCell: UITableViewCell {
     @IBAction func starIsTapped(_ sender: UIButton) {
 
         isTapped = !isTapped
-        delegate?.didLikeAnime(animeMalID:  animeModel?.mal_id ?? 0, animeIsFav: isTapped)
+        delegate?.favoriteIsTriggered(animeMalID:  animeModel?.mal_id ?? 0, animeIsFav: isTapped)
         
         if isTapped {
 
@@ -101,13 +91,7 @@ class MoviesTableViewCell: UITableViewCell {
     }
     
     // https://stackoverflow.com/questions/39464568/cannot-convert-value-of-type-uibutton-to-expected-argument-string
-//    func showIsFavorite(isFavorite: Bool, limit: Int, completion: @escaping [AMData]){
-//
-//
-//
-//
-//
-//    }
+
     
     //MARK: - FirebaseFirestore
     func storedDataInFS(){
@@ -126,7 +110,9 @@ class MoviesTableViewCell: UITableViewCell {
             request[kDATE] = Date().timeIntervalSince1970
             
             
-            self.db.collection(userID).document(animeTemp.title!).setData(request)
+            self.db.collection(userID)
+                .document(animeTemp.title!)
+                .setData(request)
             
         }
     }

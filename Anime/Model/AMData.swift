@@ -8,8 +8,6 @@
 import Foundation
 import FirebaseAuth
 
-
-    
  struct AMData: Codable {
         let data: [Data]
     }
@@ -38,6 +36,9 @@ struct Data: Codable {
         return request
     }
     
+    
+
+    
 //    static func convertArrayJSONToDataList(arrayJSON: [[String: Any]]) -> [Data] {
 //        var datas = [Data]()
 //
@@ -50,8 +51,7 @@ struct Data: Codable {
 //        return datas
 //
 //    }
-    
-    
+
     static func convertJSONToData(dictionary: [String: Any]) -> Data {
         
         var data = Data()
@@ -79,14 +79,11 @@ struct Data: Codable {
         if let isFavoriteTemp = dictionary[kISFAVORITE] as? Bool{
             data.isFavorite = isFavoriteTemp
         }
-            
-            
+    
         return data
-        
-        
+
     }
-    
-    
+
 }
 
     struct Images: Codable {
@@ -101,17 +98,6 @@ struct Data: Codable {
         
     }
 
-//func currentUser() {
-//    if Auth.auth().currentUser != nil {
-//        
-//        if userDefaults.object(forKey: kCURRENTUSER) != nil{
-//           
-//        }
-//    }
-//    
-//    
-//}
-    
     
     
 

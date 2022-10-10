@@ -12,7 +12,6 @@
 		6A2F0CF828EB131D0081CE0D /* FirebaseListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2F0CF728EB131D0081CE0D /* FirebaseListener.swift */; };
 		6A2F0CFA28EB13900081CE0D /* FCollectionReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2F0CF928EB13900081CE0D /* FCollectionReference.swift */; };
 		6A33BF2328BEA23A00B3EE1D /* FavVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A33BF2228BEA23A00B3EE1D /* FavVC.swift */; };
-		6A3928AA28BE720F0082AF80 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A3928A928BE720F0082AF80 /* ContentView.swift */; };
 		6A3E2D1B28BA62E900F13D76 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A3E2D1A28BA62E900F13D76 /* AppDelegate.swift */; };
 		6A3E2D1D28BA62E900F13D76 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A3E2D1C28BA62E900F13D76 /* SceneDelegate.swift */; };
 		6A3E2D1F28BA62E900F13D76 /* RegisterVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A3E2D1E28BA62E900F13D76 /* RegisterVC.swift */; };
@@ -57,7 +56,6 @@
 		6A2F0CF728EB131D0081CE0D /* FirebaseListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseListener.swift; sourceTree = "<group>"; };
 		6A2F0CF928EB13900081CE0D /* FCollectionReference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FCollectionReference.swift; sourceTree = "<group>"; };
 		6A33BF2228BEA23A00B3EE1D /* FavVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavVC.swift; sourceTree = "<group>"; };
-		6A3928A928BE720F0082AF80 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		6A3E2D1728BA62E900F13D76 /* Anime.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Anime.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6A3E2D1A28BA62E900F13D76 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6A3E2D1C28BA62E900F13D76 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -158,10 +156,9 @@
 				6A3E2D1E28BA62E900F13D76 /* RegisterVC.swift */,
 				6A3E2D4628BA63C900F13D76 /* LoginVC.swift */,
 				6A92B8CA28BA7992005E5977 /* MoviesVC.swift */,
-				6A8AB9BD28BCB7EB0083CF21 /* DetailVC.swift */,
 				6A33BF2228BEA23A00B3EE1D /* FavVC.swift */,
+				6A8AB9BD28BCB7EB0083CF21 /* DetailVC.swift */,
 				6A214FED28EC9C26006EEAC8 /* emptyData.swift */,
-				6A214FEF28EC9C59006EEAC8 /* emptyData.xib */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -180,7 +177,6 @@
 			children = (
 				6A3E2D4428BA639B00F13D76 /* Constants.swift */,
 				6A8AB9BB28BCA8B40083CF21 /* ImageExtension.swift */,
-				6A3928A928BE720F0082AF80 /* ContentView.swift */,
 				6A2F0CF728EB131D0081CE0D /* FirebaseListener.swift */,
 				6A2F0CF928EB13900081CE0D /* FCollectionReference.swift */,
 			);
@@ -216,6 +212,7 @@
 			children = (
 				6A3E2D2028BA62E900F13D76 /* Main.storyboard */,
 				6A3E2D2528BA62E900F13D76 /* LaunchScreen.storyboard */,
+				6A214FEF28EC9C59006EEAC8 /* emptyData.xib */,
 				6A92B8D628BAA1D3005E5977 /* MoviesTableViewCell.swift */,
 				6AC164EB28C7CE20004312CA /* FavViewCell.swift */,
 			);
@@ -378,7 +375,6 @@
 				6A92B8D728BAA1D3005E5977 /* MoviesTableViewCell.swift in Sources */,
 				6A2F0CF828EB131D0081CE0D /* FirebaseListener.swift in Sources */,
 				6A92B8CB28BA7992005E5977 /* MoviesVC.swift in Sources */,
-				6A3928AA28BE720F0082AF80 /* ContentView.swift in Sources */,
 				6A42D92428BC11320046DA01 /* AMDataManager.swift in Sources */,
 				6A33BF2328BEA23A00B3EE1D /* FavVC.swift in Sources */,
 			);

@@ -13,7 +13,7 @@ protocol FavVCDelegate{
     func didLikeAnime()
 }
 
-class FavVC: UIViewController {
+class FavVC: UIViewController  {
     
     //MARK: - IBOutlets
     @IBOutlet var uiCollectionView: UICollectionView!
@@ -30,27 +30,20 @@ class FavVC: UIViewController {
     var delegate: FavVCDelegate?
     var amInfo: Data!
     var fetchFromDB = [Data]()
-    //    var animeModelTemp: [Data] = []
     
     let db = Firestore.firestore()
-    
-    
+
     //MARK: - View Life Cycles
     override func viewDidLoad() {
         super.viewDidLoad()
         
         fetchIsFavFromDB()
         
-        
-        
         let title = UIImage(named: "FavMoviesTitle.png")
         let imageView = UIImageView(image:title)
         self.navigationItem.titleView = imageView
-        
-        
-   
+
     }
-    
     //MARK: - funcs
     private func showEmptyDataView(){
         
@@ -64,6 +57,8 @@ class FavVC: UIViewController {
         emptyDataView.titleLabel.text = title
         emptyDataView.subtitleLabel.text = subTitle
         
+      
+        
     }
     
     func fetchIsFavFromDB(){
@@ -71,8 +66,8 @@ class FavVC: UIViewController {
         guard let userID = Auth.auth().currentUser?.email else { return }
         
         db.collection(userID)
-            .order(by: kDATE)
-            .getDocuments() { (querySnapshot, error) in
+            .order(by: kMALID)
+            .getDocuments(completion: {(querySnapshot, error) in
 
                 if let e = error {
                     print("There was an issue retriving data from Firestore. \(e)")
@@ -85,16 +80,20 @@ class FavVC: UIViewController {
                             
                             let data = doc.data()
                             self.fetchFromDB.append(Data.convertJSONToData(dictionary: data))
+                            
+                          
                         }
                         
                         if self.fetchFromDB.isEmpty{
                             self.showEmptyDataView()
                         }
+                        DispatchQueue.main.async {
+                            self.uiCollectionView.reloadData()
+                        }
                         
-                        self.uiCollectionView.reloadData()
                     }
                 }
-            }
+            })
     }
 }
 
@@ -104,20 +103,23 @@ class FavVC: UIViewController {
 
 //MARK: - UICollectionView Delegate & DataSource
 
-extension FavVC: UICollectionViewDelegate, UICollectionViewDataSource {
+extension FavVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         
         let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "header", for: indexPath)
         
         return headerView
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
         return fetchFromDB.count
     }
+ 
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FavViewCell", for: indexPath) as! FavViewCell
         
         if indexPath.row < fetchFromDB.count{
@@ -126,10 +128,12 @@ extension FavVC: UICollectionViewDelegate, UICollectionViewDataSource {
             cell.setView(animeDetail: listFBTemp)
             return cell
         }
-        
+
         return cell
+  
     }
     
+  
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         
@@ -139,7 +143,7 @@ extension FavVC: UICollectionViewDelegate, UICollectionViewDataSource {
             self.navigationController?.pushViewController(thirdVC, animated: true)
         }
     }
-    
+ 
 }
 
 
