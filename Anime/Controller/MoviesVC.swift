@@ -44,9 +44,7 @@ class MoviesVC: UIViewController, UITextFieldDelegate, AMDataManagerDelegate{
     
     let db = Firestore.firestore()
     
-    
     //MARK: - View Life Cycles
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -59,15 +57,10 @@ class MoviesVC: UIViewController, UITextFieldDelegate, AMDataManagerDelegate{
         self.navigationItem.titleView = imageView
         getAMItem()
         
-        
-        
         animeNameTextField?.delegate = self
         searchBar.delegate = self
         
-        //        self.movieListTV.reloadData()
-        //        loadAnimeFromBookmarkSearch()
     }
-    
     
     //MARK: - IBActions
     
@@ -95,9 +88,6 @@ class MoviesVC: UIViewController, UITextFieldDelegate, AMDataManagerDelegate{
             self.navigationController?.pushViewController(goToFav, animated: true)
             
         }
-        
-        
-        
     }
     
     //MARK: - BookMark
@@ -115,26 +105,20 @@ class MoviesVC: UIViewController, UITextFieldDelegate, AMDataManagerDelegate{
                 self.searchInBookmark()
                 
             }
-            
         }
         
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: okHandler))
         self.present(alert, animated: true, completion: nil)
     }
-    
-    
+ 
     private func okHandler(action: UIAlertAction) -> Void {
-        
-        
+
         guard let text = animeNameTextField.text, !text.isEmpty else{
             return
         }
         
         searchInBookmark()
-        
-        
-        //    }
         self.movieListTV.reloadData()
         
     }
@@ -153,8 +137,7 @@ class MoviesVC: UIViewController, UITextFieldDelegate, AMDataManagerDelegate{
                 self.filteredMovies = response
                 self.fetchIsFavFromDB()
                 self.movieListTV.reloadData()
-                
-                
+
             case .failure(let error):
                 print(error.localizedDescription)
                 
@@ -191,7 +174,7 @@ extension MoviesVC: UITableViewDelegate, UITableViewDataSource{
                             print("this is  the save one \(doc.data())")
                             
                             if let malIDTemp = data[kMALID] as? Int {
-                           
+                                
                                 for (index, movieTemp) in self.moviesFromAPI.enumerated(){
                                     if movieTemp.mal_id == malIDTemp {
                                         
@@ -200,18 +183,15 @@ extension MoviesVC: UITableViewDelegate, UITableViewDataSource{
                                 }
                                 for (index, movieTemp) in self.filteredMovies.enumerated(){
                                     if movieTemp.mal_id == malIDTemp {
-                                       
+                                        
                                         self.filteredMovies[index].isFavorite = true
                                     }
                                 }
                             }
-                            
                         }
                         self.movieListTV?.reloadData()
                     }
-                    
                 }
-                
             })
     }
     
@@ -228,9 +208,7 @@ extension MoviesVC: UITableViewDelegate, UITableViewDataSource{
                 
             case .failure(let error):
                 print(error.localizedDescription)
-                
             }
-            
         }
     }
     
@@ -252,12 +230,9 @@ extension MoviesVC: UITableViewDelegate, UITableViewDataSource{
             cell.delegate = self
             
             return cell
-            
         }
         
-        
         return UITableViewCell()
-        
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -272,7 +247,7 @@ extension MoviesVC: UITableViewDelegate, UITableViewDataSource{
             
             thirdVC.delegate = self
             thirdVC.amInfo = filteredMovies[indexPath.row]
-//            thirdVC.setDetail(animeInfo: filteredMovies[indexPath.row])
+            //            thirdVC.setDetail(animeInfo: filteredMovies[indexPath.row])
             self.navigationController?.pushViewController(thirdVC, animated: true)
         }
     }
@@ -283,7 +258,6 @@ extension MoviesVC: UITableViewDelegate, UITableViewDataSource{
 extension MoviesVC: UISearchBarDelegate {
     
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
-        //        print("unfav2")
         
     }
     
@@ -307,7 +281,7 @@ extension MoviesVC: UISearchBarDelegate {
 }
 
 extension MoviesVC: MoviesTableViewCellDelegate {
-   
+    
     func favoriteIsTriggered(animeMalID: Int, animeIsFav: Bool) {
         for (index, movieTemp) in filteredMovies.enumerated(){
             if movieTemp.mal_id == animeMalID {
@@ -321,12 +295,12 @@ extension MoviesVC: MoviesTableViewCellDelegate {
         }
     }
     
-  
+    
     func fetchDataFromCell() {
         
     }
-
+    
 }
 extension MoviesVC: DetailVCDelegate {
-
+    
 }

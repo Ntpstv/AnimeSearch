@@ -34,10 +34,7 @@ class RegisterVC: UIViewController {
         overrideUserInterfaceStyle = .light
         setupBackgroundTouch()
     }
-    
-    
-    
-    
+
     //MARK: - IBActions
     
     @IBAction func registerButtonPressed(_ sender: UIButton) {

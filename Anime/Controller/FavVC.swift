@@ -21,18 +21,11 @@ class FavVC: UIViewController  {
     
     //MARK: - Vars
     
-    var movieVC = MoviesVC()
     var filteredMovies = [Data]()
-    var amData = [Data]()
-    let manager = AMDataManager()
-    var favVCell = FavViewCell()
-    var animeModel: Data?
-    var delegate: FavVCDelegate?
-    var amInfo: Data!
     var fetchFromDB = [Data]()
     
     let db = Firestore.firestore()
-
+    
     //MARK: - View Life Cycles
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,7 +35,7 @@ class FavVC: UIViewController  {
         let title = UIImage(named: "FavMoviesTitle.png")
         let imageView = UIImageView(image:title)
         self.navigationItem.titleView = imageView
-
+        
     }
     //MARK: - funcs
     private func showEmptyDataView(){
@@ -57,8 +50,6 @@ class FavVC: UIViewController  {
         emptyDataView.titleLabel.text = title
         emptyDataView.subtitleLabel.text = subTitle
         
-      
-        
     }
     
     func fetchIsFavFromDB(){
@@ -68,7 +59,7 @@ class FavVC: UIViewController  {
         db.collection(userID)
             .order(by: kMALID)
             .getDocuments(completion: {(querySnapshot, error) in
-
+                
                 if let e = error {
                     print("There was an issue retriving data from Firestore. \(e)")
                 }else{
@@ -81,7 +72,7 @@ class FavVC: UIViewController  {
                             let data = doc.data()
                             self.fetchFromDB.append(Data.convertJSONToData(dictionary: data))
                             
-                          
+                            
                         }
                         
                         if self.fetchFromDB.isEmpty{
@@ -97,10 +88,6 @@ class FavVC: UIViewController  {
     }
 }
 
-
-
-
-
 //MARK: - UICollectionView Delegate & DataSource
 
 extension FavVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
@@ -111,12 +98,12 @@ extension FavVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollect
         
         return headerView
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
         return fetchFromDB.count
     }
- 
+    
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
@@ -128,12 +115,12 @@ extension FavVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollect
             cell.setView(animeDetail: listFBTemp)
             return cell
         }
-
+        
         return cell
-  
+        
     }
     
-  
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         
@@ -143,7 +130,6 @@ extension FavVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollect
             self.navigationController?.pushViewController(thirdVC, animated: true)
         }
     }
- 
 }
 
 

@@ -14,9 +14,7 @@ class emptyData: UIView {
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var subtitleLabel: UILabel!
-    
-    
-    
+
     //MARK: - Initializer
     
     override init(frame: CGRect){
@@ -29,8 +27,7 @@ class emptyData: UIView {
     }
     
     private func commonInit(){
-        
-        
+
         Bundle.main.loadNibNamed("emptyData", owner: self)
         addSubview(contentView)
         contentView.frame = self.bounds

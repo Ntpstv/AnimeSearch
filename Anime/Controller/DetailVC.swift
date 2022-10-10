@@ -26,18 +26,12 @@ class DetailVC: UIViewController {
     @IBOutlet weak var backButton: UIBarButtonItem!
     @IBOutlet weak var uiScrollView: UIScrollView!
     
-    
     //MARK: - Vars
-    
     var mvTableViewCell: MoviesTableViewCell?
-    var movieVC: MoviesVC?
     var delegate: DetailVCDelegate?
     var amInfo: Data?
     var animeModel: Data?
     var isTapped = false
-    var filteredMovies = [Data]()
-    var moviesFromAPI = [Data]()
-    var fetchFromDB = [Data]()
     
     let db = Firestore.firestore()
     
@@ -47,22 +41,9 @@ class DetailVC: UIViewController {
         super.viewDidLoad()
         
         self.title = "Detail"
-        
-//        amImage.imageFromUrl(urlString: amInfo?.images?.jpg?.image_url ?? "")
-//        titleLabel.text = amInfo?.title
-//        amDetailLabel.text = amInfo?.synopsis
-//        scoreLabel.text = "Score: \(amInfo?.score ?? 0)/10"
-        
-//        let items = movieVC?.filteredMovies[indexPath.row]
         setDetail(animeInfo: amInfo ?? Data())
 
-//        delegate = self
-        
-//        hideAddFavBtnIfItemIsAlreadyAdded()
-
     }
-    
-    
     //MARK: - func Set Detail
     func setDetail(animeInfo: Data){
         self.amImage?.imageFromUrl(urlString: animeInfo.images?.jpg?.image_url ?? "")
@@ -144,7 +125,6 @@ class DetailVC: UIViewController {
             request[kSCORE] = animeTemp.score
             request[kDATE] = Date().timeIntervalSince1970
             
-            
             self.db.collection(userID).document(animeTemp.title!).setData(request)
             
         }
@@ -152,6 +132,7 @@ class DetailVC: UIViewController {
     
     func unFavorite() {
         guard let userID = Auth.auth().currentUser?.email else { return }
+        
         if let animeTemp = amInfo {
             
             var request = [String: Any]()
@@ -163,78 +144,7 @@ class DetailVC: UIViewController {
             delegate?.fetchDataFromCell()
         }
     }
-    
-//    func hideAddFavBtnIfItemIsAlreadyAdded(){
-//
-//        guard let user = Auth.auth().currentUser?.email else { return }
-//
-//        db.collection(user)
-//            .order(by: kDATE)
-//            .getDocuments(completion: {querySnapshot, error in
-//
-//                if let e = error {
-//                    print("There was an issue retrieving the data \(e)")
-//                }else{
-//                    if let snapshotDocuments = querySnapshot?.documents {
-//
-//                        self.fetchFromDB = [Data]()
-//
-//                        for doc in snapshotDocuments{
-//
-//                            let data = doc.data()
-//                            self.fetchFromDB.append(Data.convertJSONToData(dictionary: data))
-//                            //
-//                            //                            print("this is  the save one \(doc.data())")
-//                            if let malIDTemp = data[kMALID] as? Int {
-//
-//                                for (index, movieTemp) in self.moviesFromAPI.enumerated(){
-//                                    if movieTemp.mal_id == malIDTemp {
-//
-//                                        self.moviesFromAPI[index].isFavorite = true
-//
-//                                    }
-//                                }
-//                                for (index, movieTemp) in self.filteredMovies.enumerated(){
-//                                    if movieTemp.mal_id == malIDTemp {
-//
-//                                        self.filteredMovies[index].isFavorite = true
-//
-//                                    }
-//                                }
-//                                if self.titleLabel.text == doc.documentID {
-//                                    self.unFav.isHidden = false
-//                                    self.addFav.isHidden = true
-//
-//                                }
-//
-//                            }
-//                        }
-//                    }
-//                }
-//            })
-//    }
 }
 
-//extension DetailVC: DetailVCDelegate {
-//
-//    func favoriteIsTriggered(animeMalID: Int, animeIsFav: Bool) {
-//        for (index, movieTemp) in filteredMovies.enumerated(){
-//            if movieTemp.mal_id == animeMalID {
-//                filteredMovies[index].isFavorite = animeIsFav
-//
-//            }
-//        }
-//        for (index, movieTemp) in moviesFromAPI.enumerated(){
-//            if movieTemp.mal_id == animeMalID {
-//                moviesFromAPI[index].isFavorite = animeIsFav
-//
-//            }
-//        }
-//    }
-//
-//    func fetchDataFromCell() {
-//
-//    }
-//}
 
 
