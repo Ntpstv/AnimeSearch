@@ -56,6 +56,7 @@ class MoviesVC: UIViewController, UITextFieldDelegate, AMDataManagerDelegate{
         let imageView = UIImageView(image:title)
         self.navigationItem.titleView = imageView
         getAMItem()
+        getItemsFromUserDefaults()
         
         animeNameTextField?.delegate = self
         searchBar.delegate = self
@@ -89,7 +90,28 @@ class MoviesVC: UIViewController, UITextFieldDelegate, AMDataManagerDelegate{
             
         }
     }
-    
+    //MARK: - persistItems
+    func getItemsFromUserDefaults(){
+        
+        if userDefaults.string(forKey: kTITLE) != nil{
+            if let persistItems = userDefaults.string(forKey: kTITLE){
+                manager.searchFromBookmark(with: persistItems) { (result) in
+                    switch result{
+                        
+                    case .success(let response):
+                        print(response)
+                        self.filteredMovies = response
+                        self.fetchIsFavFromDB()
+                        //                          self.movieListTV.reloadData()
+                        
+                    case .failure(let error):
+                        print(error.localizedDescription)
+                        
+                    }
+                }
+            }
+        }
+    }
     //MARK: - BookMark
     @IBAction func bookmarkPressed(_ sender: UIBarButtonItem) {
         
@@ -111,15 +133,16 @@ class MoviesVC: UIViewController, UITextFieldDelegate, AMDataManagerDelegate{
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: okHandler))
         self.present(alert, animated: true, completion: nil)
     }
- 
+    
     private func okHandler(action: UIAlertAction) -> Void {
-
+        
         guard let text = animeNameTextField.text, !text.isEmpty else{
             return
         }
         
         searchInBookmark()
-        self.movieListTV.reloadData()
+        userDefaults.set(text, forKey: kTITLE)
+        //        self.movieListTV.reloadData()
         
     }
     
@@ -137,7 +160,7 @@ class MoviesVC: UIViewController, UITextFieldDelegate, AMDataManagerDelegate{
                 self.filteredMovies = response
                 self.fetchIsFavFromDB()
                 self.movieListTV.reloadData()
-
+                
             case .failure(let error):
                 print(error.localizedDescription)
                 
@@ -246,8 +269,9 @@ extension MoviesVC: UITableViewDelegate, UITableViewDataSource{
         if let thirdVC = storyboard?.instantiateViewController(withIdentifier: "DetailVC") as? DetailVC {
             
             thirdVC.delegate = self
+            
             thirdVC.amInfo = filteredMovies[indexPath.row]
-            //            thirdVC.setDetail(animeInfo: filteredMovies[indexPath.row])
+            //  thirdVC.setDetail(animeInfo: filteredMovies[indexPath.row])
             self.navigationController?.pushViewController(thirdVC, animated: true)
         }
     }
@@ -302,5 +326,28 @@ extension MoviesVC: MoviesTableViewCellDelegate {
     
 }
 extension MoviesVC: DetailVCDelegate {
+    
+    func favoriteIsChangedFromDetailVCDelegate(animeMalID: Int, animeIsFav: Bool) {
+        
+        for (index, movieTemp) in filteredMovies.enumerated(){
+            if movieTemp.mal_id == animeMalID {
+                filteredMovies[index].isFavorite = animeIsFav
+                var indexPathArray = [IndexPath]()
+                indexPathArray.append(IndexPath(row: index, section: 0))
+                movieListTV.reloadRows(at: indexPathArray, with: .automatic)
+            }
+        }
+        
+        for (index, movieTemp) in moviesFromAPI.enumerated(){
+            if movieTemp.mal_id == animeMalID {
+                moviesFromAPI[index].isFavorite = animeIsFav
+            }
+        }
+    }
+    
+    func fetchDataFromCellFromDetailVCDelegate() {
+        
+    }
+    
     
 }

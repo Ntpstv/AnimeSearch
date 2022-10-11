@@ -21,7 +21,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         
         autoLogin()
-        assignAnotherRootVC()
+//        assignAnotherRootVC()
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
@@ -79,14 +79,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 self.window?.rootViewController = mainView
     
     }
-
-    private func assignAnotherRootVC() {
-        
-        let mainView = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "Nav_MoviesVC") as! UINavigationController
- 
-        self.window?.rootViewController = mainView
-
-    }
+//
+//    private func assignAnotherRootVC() {
+//
+//        let mainView = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "Nav_MoviesVC") as! UINavigationController
+//
+//        self.window?.rootViewController = mainView
+//
+//    }
     
 }
 

@@ -11,8 +11,8 @@ import FirebaseFirestore
 import FirebaseAuth
 
 protocol DetailVCDelegate: AnyObject {
-    func favoriteIsTriggered(animeMalID: Int, animeIsFav: Bool)
-    func fetchDataFromCell()
+    func favoriteIsChangedFromDetailVCDelegate(animeMalID: Int, animeIsFav: Bool)
+    func fetchDataFromCellFromDetailVCDelegate()
 }
 
 class DetailVC: UIViewController {
@@ -31,6 +31,8 @@ class DetailVC: UIViewController {
     var delegate: DetailVCDelegate?
     var amInfo: Data?
     var animeModel: Data?
+//    var filteredMovies = [Data]()
+//    var moviesFromAPI = [Data]()
     var isTapped = false
     
     let db = Firestore.firestore()
@@ -83,7 +85,9 @@ class DetailVC: UIViewController {
     
     @IBAction func addFoviteButton(_ sender: UIButton){
         
-        delegate?.favoriteIsTriggered(animeMalID:  animeModel?.mal_id ?? 0, animeIsFav: isTapped)
+        isTapped = true
+        
+        delegate?.favoriteIsChangedFromDetailVCDelegate(animeMalID: amInfo?.mal_id ?? 0, animeIsFav:  isTapped)
    
         if self.navigationController != nil{
             print("pressed: fav is added")
@@ -92,6 +96,7 @@ class DetailVC: UIViewController {
             
            
             storedDataInFS()
+            navigationController?.popViewController(animated: true)
             
         }
     }
@@ -99,7 +104,9 @@ class DetailVC: UIViewController {
     
     @IBAction func unFavoriteBtnIsPressed(_ sender: UIButton) {
         
-        delegate?.favoriteIsTriggered(animeMalID:  animeModel?.mal_id ?? 0, animeIsFav: isTapped)
+        isTapped = false
+        
+        delegate?.favoriteIsChangedFromDetailVCDelegate(animeMalID:  amInfo?.mal_id ?? 0, animeIsFav: isTapped)
         
         if self.navigationController != nil {
             print("pressed: unfav")
@@ -107,6 +114,7 @@ class DetailVC: UIViewController {
             unFav.isHidden = true
             
             unFavorite()
+            navigationController?.popViewController(animated: true)
         }
     }
     //MARK: - Firestore
@@ -141,7 +149,7 @@ class DetailVC: UIViewController {
             
             db.collection(userID).document(animeTemp.title!).delete()
             
-            delegate?.fetchDataFromCell()
+            delegate?.fetchDataFromCellFromDetailVCDelegate()
         }
     }
 }

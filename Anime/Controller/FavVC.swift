@@ -9,9 +9,7 @@ import UIKit
 import FirebaseFirestore
 import FirebaseAuth
 
-protocol FavVCDelegate{
-    func didLikeAnime()
-}
+
 
 class FavVC: UIViewController  {
     
@@ -70,9 +68,11 @@ class FavVC: UIViewController  {
                         for doc in snapshotDocuments {
                             
                             let data = doc.data()
-                            self.fetchFromDB.append(Data.convertJSONToData(dictionary: data))
-                            
-                            
+                            var animeData = Data.convertJSONToData(dictionary: data)
+                            animeData.isFavorite = true
+                  
+                            self.fetchFromDB.append(animeData)
+     
                         }
                         
                         if self.fetchFromDB.isEmpty{
@@ -126,10 +126,21 @@ extension FavVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollect
         
         if let thirdVC = storyboard?.instantiateViewController(withIdentifier: "DetailVC") as? DetailVC{
             
-            thirdVC.amInfo = filteredMovies[indexPath.row]
+            thirdVC.delegate = self
+            thirdVC.amInfo = fetchFromDB[indexPath.row]
             self.navigationController?.pushViewController(thirdVC, animated: true)
         }
     }
 }
 
-
+extension FavVC: DetailVCDelegate{
+    func favoriteIsChangedFromDetailVCDelegate(animeMalID: Int, animeIsFav: Bool) {
+        
+    }
+    
+    func fetchDataFromCellFromDetailVCDelegate() {
+        fetchIsFavFromDB()
+    }
+    
+    
+}
