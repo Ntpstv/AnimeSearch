@@ -12,9 +12,6 @@ import FirebaseStorage
 import FirebaseAuth
 import ProgressHUD
 
-
-
-
 class RegisterVC: UIViewController {
     
     //MARK: - IBOutlets
@@ -34,11 +31,10 @@ class RegisterVC: UIViewController {
         overrideUserInterfaceStyle = .light
         setupBackgroundTouch()
     }
-
+    
     //MARK: - IBActions
     
     @IBAction func registerButtonPressed(_ sender: UIButton) {
-        
         
         guard let email = emailTextField.text, !email.isEmpty,
               let password = passwordTextField.text, !password.isEmpty,
@@ -74,15 +70,12 @@ class RegisterVC: UIViewController {
                     userDefaults.synchronize()
                     ProgressHUD.showSuccess("Your account has been created")
                     
-                    
-                    
                     self.navigationController?.popViewController(animated: true)
                     
                 }
             }
         }
     }
-    
     
     //MARK: - Setup
     private func setupBackgroundTouch() {
@@ -110,7 +103,6 @@ class RegisterVC: UIViewController {
         confirmPWTextfield.text != ""
         
     }
-    
 }
 
 

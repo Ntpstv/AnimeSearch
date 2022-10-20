@@ -38,11 +38,7 @@ class MoviesVC: UIViewController, UITextFieldDelegate, AMDataManagerDelegate {
     var moviesTableViewCell = MoviesTableViewCell()
     var animeNameTextField: UITextField!
     var delegate: AMDataManagerDelegate?
-    var favVC: FavVC?
 
-    
-   
-    
     let animeURL = "https://api.jikan.moe/v4/anime?"
     var url = "https://cdn.myanimelist.net/images/anime/7/57855.jpg"
     
@@ -82,8 +78,7 @@ class MoviesVC: UIViewController, UITextFieldDelegate, AMDataManagerDelegate {
         noDataShow.imageView.image = UIImage(named: imageName)
         noDataShow.titleLabel.text = title
         noDataShow.subtitleLabel.text = subTitle
-        
-        
+ 
     }
     private func dismissEmptyDataView(){
         
@@ -163,14 +158,12 @@ class MoviesVC: UIViewController, UITextFieldDelegate, AMDataManagerDelegate {
                 self.searchInBookmark()
                 
             }
-           
         }
         
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: okHandler))
         self.present(alert, animated: true, completion: nil)
-        
-        
+
     }
     
     private func okHandler(action: UIAlertAction) -> Void {
@@ -184,8 +177,7 @@ class MoviesVC: UIViewController, UITextFieldDelegate, AMDataManagerDelegate {
 
         userDefaults.set(text, forKey: kTITLE)
         //        self.movieListTV.reloadData()
-        
- 
+
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -219,42 +211,8 @@ class MoviesVC: UIViewController, UITextFieldDelegate, AMDataManagerDelegate {
 
 extension MoviesVC: UITableViewDelegate, UITableViewDataSource{
  
-    func fetchIsFavFromDBFromFavVC(){
-
-        guard let userID = Auth.auth().currentUser?.email else { return }
-
-        db.collection(userID)
-            .order(by: kMALID)
-            .getDocuments(completion: {(querySnapshot, error) in
-
-                if let e = error {
-                    print("There was an issue retriving data from Firestore. \(e)")
-                }else{
-                    if let snapshotDocuments = querySnapshot?.documents {
-
-                        self.fetchFromDB = [Data]()
-
-                        for doc in snapshotDocuments {
-
-                            let data = doc.data()
-                            var animeData = Data.convertJSONToData(dictionary: data)
-                            animeData.isFavorite = true
-
-                            self.fetchFromDB.append(animeData)
-
-                        }
-
-                        DispatchQueue.main.async {
-                            self.movieListTV.reloadData()
-                        }
-                    }
-                }
-            })
-    }
-    
     func fetchIsFavFromDBToMainVC(){
-        
-        
+   
         for (index) in self.filteredMovies.indices{
            
                 self.filteredMovies[index].isFavorite = false

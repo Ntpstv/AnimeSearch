@@ -10,7 +10,6 @@ import FirebaseAuth
 import FirebaseFirestore
 import ProgressHUD
 
-
 class LoginVC: UIViewController {
     
     //MARK: - IBOutlets
@@ -24,7 +23,6 @@ class LoginVC: UIViewController {
     var db = Firestore.firestore()
     var animeModel: Data?
     
-    
     //MARK: - ViewLifeCycle
     
     override func viewDidLoad() {
@@ -34,7 +32,7 @@ class LoginVC: UIViewController {
         setupBackgroundTouch()
         
         navigationItem.hidesBackButton = true
-
+        
         titleLabel.text = ""
         var charIndex   = 0.0
         let titleText   = "Anime"
@@ -46,37 +44,35 @@ class LoginVC: UIViewController {
             charIndex += 1
             
         }
-
+        
     }
-    
     
     //MARK: - IBActions
     
     @IBAction func loginButtonPressed(_ sender: UIButton) {
-
-            
+        
         let email = emailTextField.text!.trimmingCharacters(in: .whitespacesAndNewlines)
-              let password = passwordTextField.text!.trimmingCharacters(in: .whitespacesAndNewlines)
-              
-              Auth.auth().signIn(withEmail: email, password: password) { authResult, error in
-                  
-                  if error != nil {
-                    
-                      ProgressHUD.showError(error!.localizedDescription)
-                     
-                  } else {
-
-                      self.emailTextField.text = ""
-                      self.passwordTextField.text = ""
-                      
-                      self.goToApp()
+        let password = passwordTextField.text!.trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        Auth.auth().signIn(withEmail: email, password: password) { authResult, error in
             
+            if error != nil {
+                
+                ProgressHUD.showError(error!.localizedDescription)
+                
+            } else {
+                
+                self.emailTextField.text = ""
+                self.passwordTextField.text = ""
+                
+                self.goToApp()
+                
             }
             
         }
         
     }
-
+    
     //MARK: - Setup
     
     private func setupBackgroundTouch() {
@@ -104,6 +100,6 @@ class LoginVC: UIViewController {
         self.present(mainView, animated: true)
         
     }
-
+    
 }
 
