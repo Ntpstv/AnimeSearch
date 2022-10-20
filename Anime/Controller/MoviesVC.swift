@@ -13,7 +13,7 @@ import FirebaseFirestore
 import ProgressHUD
 
 
-class MoviesVC: UIViewController, UITextFieldDelegate, AMDataManagerDelegate{
+class MoviesVC: UIViewController, UITextFieldDelegate, AMDataManagerDelegate {
     
     func didUpdateAMData(_nytDataManager: AMDataManager, Results: Data) {
         
@@ -24,6 +24,7 @@ class MoviesVC: UIViewController, UITextFieldDelegate, AMDataManagerDelegate{
     }
     //MARK: - IBOutlets
     
+    @IBOutlet weak var noDataShow: emptyData!
     @IBOutlet weak var movieListTV: UITableView!
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var bookMark: UIBarButtonItem!
@@ -37,7 +38,10 @@ class MoviesVC: UIViewController, UITextFieldDelegate, AMDataManagerDelegate{
     var moviesTableViewCell = MoviesTableViewCell()
     var animeNameTextField: UITextField!
     var delegate: AMDataManagerDelegate?
-    var animeModel: Data?
+    var favVC: FavVC?
+
+    
+   
     
     let animeURL = "https://api.jikan.moe/v4/anime?"
     var url = "https://cdn.myanimelist.net/images/anime/7/57855.jpg"
@@ -49,7 +53,10 @@ class MoviesVC: UIViewController, UITextFieldDelegate, AMDataManagerDelegate{
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        
         ProgressHUD.show()
+        showNoDataView()
+        
         self.navigationController?.isNavigationBarHidden = false
         
         let title = UIImage(named: "AMMovie.png")
@@ -57,12 +64,40 @@ class MoviesVC: UIViewController, UITextFieldDelegate, AMDataManagerDelegate{
         self.navigationItem.titleView = imageView
         getAMItem()
         getItemsFromUserDefaults()
+        fetchIsFavFromDBToMainVC()
         
         animeNameTextField?.delegate = self
         searchBar.delegate = self
         
     }
-    
+    //MARK: - emptyView
+    private func showNoDataView(){
+        
+        noDataShow.isHidden = false
+        
+        let imageName = "catIsSoSad"
+        let title = "No Data"
+        let subTitle = "No anime cartoon data"
+        
+        noDataShow.imageView.image = UIImage(named: imageName)
+        noDataShow.titleLabel.text = title
+        noDataShow.subtitleLabel.text = subTitle
+        
+        
+    }
+    private func dismissEmptyDataView(){
+        
+        noDataShow.isHidden = true
+        
+        let imageName = "catIsSoSad"
+        let title = "No Data"
+        let subTitle = "No anime cartoon data"
+        
+        noDataShow.imageView.image = UIImage(named: imageName)
+        noDataShow.titleLabel.text = title
+        noDataShow.subtitleLabel.text = subTitle
+        
+    }
     //MARK: - IBActions
     
     @IBAction func logOutButton(_ sender: UIButton) {
@@ -84,7 +119,8 @@ class MoviesVC: UIViewController, UITextFieldDelegate, AMDataManagerDelegate{
     @IBAction func FavoriteBtnPressed(_ sender: UIButton) {
         
         if let goToFav = storyboard?.instantiateViewController(withIdentifier: "FavVC") as? FavVC  {
-            
+
+            goToFav.favDelegate = self
             goToFav.filteredMovies = moviesFromAPI.filter({$0.isFavorite == true})
             self.navigationController?.pushViewController(goToFav, animated: true)
             
@@ -101,8 +137,8 @@ class MoviesVC: UIViewController, UITextFieldDelegate, AMDataManagerDelegate{
                     case .success(let response):
                         print(response)
                         self.filteredMovies = response
-                        self.fetchIsFavFromDB()
-                        //                          self.movieListTV.reloadData()
+                        self.fetchIsFavFromDBToMainVC()
+                        // self.movieListTV.reloadData()
                         
                     case .failure(let error):
                         print(error.localizedDescription)
@@ -127,23 +163,29 @@ class MoviesVC: UIViewController, UITextFieldDelegate, AMDataManagerDelegate{
                 self.searchInBookmark()
                 
             }
+           
         }
         
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: okHandler))
         self.present(alert, animated: true, completion: nil)
+        
+        
     }
     
     private func okHandler(action: UIAlertAction) -> Void {
         
+
         guard let text = animeNameTextField.text, !text.isEmpty else{
             return
         }
-        
+   
         searchInBookmark()
+
         userDefaults.set(text, forKey: kTITLE)
         //        self.movieListTV.reloadData()
         
+ 
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -153,30 +195,75 @@ class MoviesVC: UIViewController, UITextFieldDelegate, AMDataManagerDelegate{
     
     func searchInBookmark(){
         manager.searchFromBookmark(with: animeNameTextField.text ?? "") {(result) in
+            
+            
             switch result{
                 
             case .success(let response):
-                print(response)
+//                print(response)
                 self.filteredMovies = response
-                self.fetchIsFavFromDB()
+                self.fetchIsFavFromDBToMainVC()
                 self.movieListTV.reloadData()
+ 
                 
             case .failure(let error):
-                print(error.localizedDescription)
                 
+                print(error.localizedDescription)
+
             }
-        }
+            }
     }
 }
 
 //MARK: - TableView Delegate /FetchIsFevToMoviesVC
 
 extension MoviesVC: UITableViewDelegate, UITableViewDataSource{
+ 
+    func fetchIsFavFromDBFromFavVC(){
+
+        guard let userID = Auth.auth().currentUser?.email else { return }
+
+        db.collection(userID)
+            .order(by: kMALID)
+            .getDocuments(completion: {(querySnapshot, error) in
+
+                if let e = error {
+                    print("There was an issue retriving data from Firestore. \(e)")
+                }else{
+                    if let snapshotDocuments = querySnapshot?.documents {
+
+                        self.fetchFromDB = [Data]()
+
+                        for doc in snapshotDocuments {
+
+                            let data = doc.data()
+                            var animeData = Data.convertJSONToData(dictionary: data)
+                            animeData.isFavorite = true
+
+                            self.fetchFromDB.append(animeData)
+
+                        }
+
+                        DispatchQueue.main.async {
+                            self.movieListTV.reloadData()
+                        }
+                    }
+                }
+            })
+    }
     
-    func fetchIsFavFromDB(){
+    func fetchIsFavFromDBToMainVC(){
+        
+        
+        for (index) in self.filteredMovies.indices{
+           
+                self.filteredMovies[index].isFavorite = false
+            
+        }
         
         ProgressHUD.dismiss()
-        
+        dismissEmptyDataView()
+
         guard let user = Auth.auth().currentUser?.email else { return }
         db.collection(user)
             .order(by: kDATE)
@@ -211,7 +298,9 @@ extension MoviesVC: UITableViewDelegate, UITableViewDataSource{
                                     }
                                 }
                             }
+                            
                         }
+                       
                         self.movieListTV?.reloadData()
                     }
                 }
@@ -220,6 +309,7 @@ extension MoviesVC: UITableViewDelegate, UITableViewDataSource{
     
     //MARK: - Fetch Alamofire Data
     func getAMItem() {
+   
         manager.fetchAM(){(result) in
             switch result{
                 
@@ -227,9 +317,10 @@ extension MoviesVC: UITableViewDelegate, UITableViewDataSource{
                 print(response)
                 self.filteredMovies = response
                 self.moviesFromAPI = response
-                self.fetchIsFavFromDB()
-                
+                self.fetchIsFavFromDBToMainVC()
+      
             case .failure(let error):
+               
                 print(error.localizedDescription)
             }
         }
@@ -265,11 +356,10 @@ extension MoviesVC: UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         movieListTV.deselectRow(at: indexPath, animated: true)
-        
+
         if let thirdVC = storyboard?.instantiateViewController(withIdentifier: "DetailVC") as? DetailVC {
             
             thirdVC.delegate = self
-            
             thirdVC.amInfo = filteredMovies[indexPath.row]
             //  thirdVC.setDetail(animeInfo: filteredMovies[indexPath.row])
             self.navigationController?.pushViewController(thirdVC, animated: true)
@@ -310,18 +400,20 @@ extension MoviesVC: MoviesTableViewCellDelegate {
         for (index, movieTemp) in filteredMovies.enumerated(){
             if movieTemp.mal_id == animeMalID {
                 filteredMovies[index].isFavorite = animeIsFav
+
             }
         }
         for (index, movieTemp) in moviesFromAPI.enumerated(){
             if movieTemp.mal_id == animeMalID {
                 moviesFromAPI[index].isFavorite = animeIsFav
+ 
             }
         }
     }
     
     
     func fetchDataFromCell() {
-        
+       
     }
     
 }
@@ -332,22 +424,38 @@ extension MoviesVC: DetailVCDelegate {
         for (index, movieTemp) in filteredMovies.enumerated(){
             if movieTemp.mal_id == animeMalID {
                 filteredMovies[index].isFavorite = animeIsFav
+                
                 var indexPathArray = [IndexPath]()
                 indexPathArray.append(IndexPath(row: index, section: 0))
+                
                 movieListTV.reloadRows(at: indexPathArray, with: .automatic)
+                
             }
         }
         
         for (index, movieTemp) in moviesFromAPI.enumerated(){
             if movieTemp.mal_id == animeMalID {
                 moviesFromAPI[index].isFavorite = animeIsFav
+
             }
         }
     }
     
     func fetchDataFromCellFromDetailVCDelegate() {
-        
+    }
+}
+
+
+extension MoviesVC: FavVCDelegate{
+
+    func favoriteIsChangedFromFavVCDelegate(animeMalID: Int, animeIsFav: Bool) {
+
     }
     
-    
+    func fetchDataFromCellFromFavVCDelegate() {
+        fetchIsFavFromDBToMainVC()
+
+    }
 }
+
+

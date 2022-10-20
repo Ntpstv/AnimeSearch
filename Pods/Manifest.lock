@@ -733,6 +733,7 @@ PODS:
   - nanopb/encode (2.30909.0)
   - ProgressHUD (2.70)
   - PromisesObjC (2.1.1)
+  - Swiftly (2.0.0)
 
 DEPENDENCIES:
   - Alamofire
@@ -741,6 +742,7 @@ DEPENDENCIES:
   - FirebaseFirestore
   - FirebaseStorage
   - ProgressHUD
+  - Swiftly
 
 SPEC REPOS:
   trunk:
@@ -768,6 +770,7 @@ SPEC REPOS:
     - nanopb
     - ProgressHUD
     - PromisesObjC
+    - Swiftly
 
 SPEC CHECKSUMS:
   abseil: ebe5b5529fb05d93a8bdb7951607be08b7fa71bc
@@ -794,7 +797,8 @@ SPEC CHECKSUMS:
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
   ProgressHUD: e603e8b8622c47d8818b9fb38b3cfe9d3e7ca421
   PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
+  Swiftly: 59b7d342f66b28e8e7129239ddd369bd6314cfd0
 
-PODFILE CHECKSUM: d39b059c717064b069c3b03b59a45c0c5d29d3e3
+PODFILE CHECKSUM: 0ff71b819cf52b1cbd808890c344776816ac937f
 
 COCOAPODS: 1.11.3

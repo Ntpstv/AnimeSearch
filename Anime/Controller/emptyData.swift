@@ -7,6 +7,10 @@
 
 import UIKit
 
+
+
+
+
 class emptyData: UIView {
     //MARK: - IBOutlets
     
@@ -15,6 +19,8 @@ class emptyData: UIView {
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var subtitleLabel: UILabel!
 
+
+    
     //MARK: - Initializer
     
     override init(frame: CGRect){
@@ -37,3 +43,4 @@ class emptyData: UIView {
     
     
 }
+

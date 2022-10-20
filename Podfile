@@ -13,5 +13,6 @@ pod 'FirebaseAuth'
 pod 'FirebaseFirestore'
 pod 'ProgressHUD'
 pod 'FirebaseStorage'
+pod "Swiftly"
 
 end

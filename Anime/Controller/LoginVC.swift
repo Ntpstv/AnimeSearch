@@ -34,8 +34,7 @@ class LoginVC: UIViewController {
         setupBackgroundTouch()
         
         navigationItem.hidesBackButton = true
-        
-        
+
         titleLabel.text = ""
         var charIndex   = 0.0
         let titleText   = "Anime"

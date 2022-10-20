@@ -28,18 +28,20 @@ class MoviesTableViewCell: UITableViewCell {
     
     
     //MARK: - Vars
+
     var animeModel: Data?
     var amData: AMData?
     var isTapped = false
-    var movieTableView: MoviesVC?
     var loginVC: LoginVC?
     var detailVC: DetailVC?
+//    var favVC: FavVC?
     var delegate: MoviesTableViewCellDelegate?
+    var delegateFromDetail: DetailVCDelegate?
     let url = URL(string: "https://cdn.myanimelist.net/images/anime/7/57855.jpg")
     var db = Firestore.firestore()
     var storeFavoriteItems: [AMData] = []
-    
-    
+//    var filteredMovies = [Data]()
+//    var moviesFromAPI = [Data]()
     
     //MARK: - ViewLifeCycles
     override func awakeFromNib() {
@@ -51,6 +53,7 @@ class MoviesTableViewCell: UITableViewCell {
     //MARK: - Set isFavorite
 
     func setDetail(animeInfo: Data){
+        
         mvTitleLabel.text = animeInfo.title
         mvDetailLabel.text = animeInfo.synopsis
         mvImage.imageFromUrl(urlString: animeInfo.images?.jpg?.image_url ?? "")
@@ -76,12 +79,14 @@ class MoviesTableViewCell: UITableViewCell {
 
         isTapped = !isTapped
         delegate?.favoriteIsTriggered(animeMalID:  animeModel?.mal_id ?? 0, animeIsFav: isTapped)
+
         
         if isTapped {
 
             sender.setImage(UIImage(systemName: "star.fill"), for: .normal)
            
             storedDataInFS()
+            
         }else{
 
             sender.setImage(UIImage(systemName: "star"), for: .normal)
@@ -113,7 +118,7 @@ class MoviesTableViewCell: UITableViewCell {
             self.db.collection(userID)
                 .document(animeTemp.title!)
                 .setData(request)
-            
+
         }
     }
     
@@ -128,13 +133,10 @@ class MoviesTableViewCell: UITableViewCell {
             db.collection(userID).document(animeTemp.title!).delete()
             
             delegate?.fetchDataFromCell()
-            
-        }
-        
-    }
-    
-}
 
+        }
+    }
+}
 
 
 

@@ -230,9 +230,21 @@
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </view>
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DcM-sc-cBj" customClass="emptyData" customModule="Anime" customModuleProvider="target">
+                                <rect key="frame" x="52" y="271" width="331" height="355"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="355" id="Ezv-no-xhC"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="cMf-TQ-miz"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="DcM-sc-cBj" firstAttribute="leading" secondItem="cMf-TQ-miz" secondAttribute="leading" constant="52" id="SDe-pT-Q3r"/>
+                            <constraint firstItem="cMf-TQ-miz" firstAttribute="trailing" secondItem="DcM-sc-cBj" secondAttribute="trailing" constant="31" id="ZaA-Dl-nqg"/>
+                            <constraint firstItem="DcM-sc-cBj" firstAttribute="top" secondItem="cMf-TQ-miz" secondAttribute="top" constant="179" id="nmN-Ve-Myl"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="tnQ-kw-axA">
                         <barButtonItem key="rightBarButtonItem" systemItem="bookmarks" id="I3V-W9-nrs">
@@ -245,12 +257,13 @@
                     <connections>
                         <outlet property="bookMark" destination="I3V-W9-nrs" id="Hfg-8R-XQH"/>
                         <outlet property="movieListTV" destination="WeQ-bl-5Pu" id="Wi1-VU-lZ9"/>
+                        <outlet property="noDataShow" destination="DcM-sc-cBj" id="pHs-lB-9UC"/>
                         <outlet property="searchBar" destination="Hh5-zu-j9c" id="kfl-aO-cQh"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ziu-nx-L9y" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1803" y="956"/>
+            <point key="canvasLocation" x="1923" y="956"/>
         </scene>
         <!--FavVC-->
         <scene sceneID="H1U-vE-DXJ">

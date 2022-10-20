@@ -15,9 +15,13 @@ protocol AMDataManagerDelegate: AnyObject {
     func didFailWithError(error: Error)
 }
 
+
+
 struct AMDataManager{
     
+    var moviesVC: MoviesVC?
     var delegate: AMDataManagerDelegate?
+//    var dataLoadingDelegate: DataLoadingDelegate?
 //    var amData = [Data]()
     
     let animeURL = "https://api.jikan.moe/v4/anime"
@@ -37,7 +41,7 @@ struct AMDataManager{
                 
             case .failure(let error):
                 print("error: \(error)")
-                
+               
                 completion(.failure(error))
             }
         }
@@ -47,27 +51,36 @@ struct AMDataManager{
         //        https://api.jikan.moe/v4/anime?q=xxxxxx
         
         guard !query.trimmingCharacters(in: .whitespaces).isEmpty else {
-            return
+            return 
         }
         let urlString = "\(animeURL)?q=\(query)"
         guard let url = URL(string: urlString) else {
             return
         }
 
-                AF.request(url, parameters: nil).responseDecodable(of: AMData.self, queue: .main, decoder: JSONDecoder(), emptyResponseCodes: [200, 204, 205]) { (response) in
+                AF.request(url, parameters: nil).responseDecodable(of: AMData.self, queue: .main, decoder: JSONDecoder(), emptyResponseCodes: [200, 204, 205] ){ (response) in
 
                     switch response.result {
 
                     case .success(let data):
                         completion(.success(data.data))
 
-                    case .failure(let error):
+                    case .failure(let error ):
+                        
+//                        moviesVC?.noDataShow.isHidden = false
+                        
+//                        let imageName = "catIsSoSad"
+//                        let title = "No Data"
+//                        let subTitle = "No anime cartoon data"
+//                        
+//                        moviesVC?.noDataShow.imageView.image = UIImage(named: imageName)
+//                        moviesVC?.noDataShow.titleLabel.text = title
+//                        moviesVC?.noDataShow.subtitleLabel.text = subTitle
+                        
                         print("error: \(error)")
 
                         completion(.failure(error))
                     }
                 }
             }
-    
 }
-

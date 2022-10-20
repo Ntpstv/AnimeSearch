@@ -15,6 +15,11 @@ protocol DetailVCDelegate: AnyObject {
     func fetchDataFromCellFromDetailVCDelegate()
 }
 
+//protocol FavVCDelegate: AnyObject {
+//    func favoriteIsChangedFromFavVCDelegate(animeMalID: Int, animeIsFav: Bool)
+//    func fetchDataFromCellFromFavVCDelegate()
+//}
+
 class DetailVC: UIViewController {
     //MARK: - IBOutlets
     @IBOutlet weak var titleLabel: UILabel!
@@ -29,6 +34,7 @@ class DetailVC: UIViewController {
     //MARK: - Vars
     var mvTableViewCell: MoviesTableViewCell?
     var delegate: DetailVCDelegate?
+//    var delegateFromFavVC: FavVCDelegate?
     var amInfo: Data?
     var animeModel: Data?
 //    var filteredMovies = [Data]()
@@ -70,6 +76,7 @@ class DetailVC: UIViewController {
     //MARK: - IBActions
     
     @IBAction func backBTPressed(_ sender: UIButton) {
+       
         navigationController?.popViewController(animated: true)
         
     }
@@ -87,7 +94,9 @@ class DetailVC: UIViewController {
         
         isTapped = true
         
+//        delegateFromFavVC?.favoriteIsChangedFromFavVCDelegate(animeMalID: amInfo?.mal_id ?? 0, animeIsFav: isTapped)
         delegate?.favoriteIsChangedFromDetailVCDelegate(animeMalID: amInfo?.mal_id ?? 0, animeIsFav:  isTapped)
+        
    
         if self.navigationController != nil{
             print("pressed: fav is added")
@@ -103,19 +112,21 @@ class DetailVC: UIViewController {
     
     
     @IBAction func unFavoriteBtnIsPressed(_ sender: UIButton) {
-        
+
         isTapped = false
-        
+
         delegate?.favoriteIsChangedFromDetailVCDelegate(animeMalID:  amInfo?.mal_id ?? 0, animeIsFav: isTapped)
         
         if self.navigationController != nil {
             print("pressed: unfav")
             addFav.isHidden = false
             unFav.isHidden = true
-            
+
             unFavorite()
             navigationController?.popViewController(animated: true)
+            
         }
+
     }
     //MARK: - Firestore
     func storedDataInFS(){
@@ -134,11 +145,15 @@ class DetailVC: UIViewController {
             request[kDATE] = Date().timeIntervalSince1970
             
             self.db.collection(userID).document(animeTemp.title!).setData(request)
-            
+    
         }
+        
     }
     
     func unFavorite() {
+        
+      
+     
         guard let userID = Auth.auth().currentUser?.email else { return }
         
         if let animeTemp = amInfo {
@@ -148,8 +163,11 @@ class DetailVC: UIViewController {
             request["title"] = animeTemp.title
             
             db.collection(userID).document(animeTemp.title!).delete()
+            isTapped = false
             
+//            delegateFromFavVC?.fetchDataFromCellFromFavVCDelegate()
             delegate?.fetchDataFromCellFromDetailVCDelegate()
+
         }
     }
 }
