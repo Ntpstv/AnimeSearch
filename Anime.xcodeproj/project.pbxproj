@@ -38,11 +38,10 @@
 		6A92B8CF28BA9B0C005E5977 /* darkStar.png in Resources */ = {isa = PBXBuildFile; fileRef = 6A92B8CE28BA9B0C005E5977 /* darkStar.png */; };
 		6A92B8D128BA9B2A005E5977 /* yellowStar.png in Resources */ = {isa = PBXBuildFile; fileRef = 6A92B8D028BA9B2A005E5977 /* yellowStar.png */; };
 		6A92B8D728BAA1D3005E5977 /* MoviesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A92B8D628BAA1D3005E5977 /* MoviesTableViewCell.swift */; };
-		6AB6CB3028ECA9B500FA5EE1 /* catSad.png in Resources */ = {isa = PBXBuildFile; fileRef = 6AB6CB2F28ECA9B500FA5EE1 /* catSad.png */; };
-		6AB6CB3228ECAB3300FA5EE1 /* catIsSoSad.png in Resources */ = {isa = PBXBuildFile; fileRef = 6AB6CB3128ECAB3300FA5EE1 /* catIsSoSad.png */; };
+		6AB4AF5F2A0A70430090E0FD /* catSad.png in Resources */ = {isa = PBXBuildFile; fileRef = 6AB4AF5D2A0A70430090E0FD /* catSad.png */; };
+		6AB4AF602A0A70430090E0FD /* catIsSoSad.png in Resources */ = {isa = PBXBuildFile; fileRef = 6AB4AF5E2A0A70430090E0FD /* catIsSoSad.png */; };
 		6AC164EC28C7CE20004312CA /* FavViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC164EB28C7CE20004312CA /* FavViewCell.swift */; };
 		6AF0033028C601C60069E5E7 /* unfavStar.png in Resources */ = {isa = PBXBuildFile; fileRef = 6AF0032F28C601C60069E5E7 /* unfavStar.png */; };
-		6AF0033228C601DC0069E5E7 /* brightStar.png in Resources */ = {isa = PBXBuildFile; fileRef = 6AF0033128C601DC0069E5E7 /* brightStar.png */; };
 		8F39BB492E4531939F9281F4 /* Pods_Anime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FA0CB74A9B49F3972EB6668 /* Pods_Anime.framework */; };
 /* End PBXBuildFile section */
 
@@ -82,11 +81,10 @@
 		6A92B8CE28BA9B0C005E5977 /* darkStar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = darkStar.png; sourceTree = "<group>"; };
 		6A92B8D028BA9B2A005E5977 /* yellowStar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = yellowStar.png; sourceTree = "<group>"; };
 		6A92B8D628BAA1D3005E5977 /* MoviesTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviesTableViewCell.swift; sourceTree = "<group>"; };
-		6AB6CB2F28ECA9B500FA5EE1 /* catSad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = catSad.png; path = ../../../catSad.png; sourceTree = "<group>"; };
-		6AB6CB3128ECAB3300FA5EE1 /* catIsSoSad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = catIsSoSad.png; path = ../../../../Downloads/catIsSoSad.png; sourceTree = "<group>"; };
+		6AB4AF5D2A0A70430090E0FD /* catSad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = catSad.png; sourceTree = SOURCE_ROOT; };
+		6AB4AF5E2A0A70430090E0FD /* catIsSoSad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = catIsSoSad.png; sourceTree = SOURCE_ROOT; };
 		6AC164EB28C7CE20004312CA /* FavViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavViewCell.swift; sourceTree = "<group>"; };
 		6AF0032F28C601C60069E5E7 /* unfavStar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = unfavStar.png; sourceTree = "<group>"; };
-		6AF0033128C601DC0069E5E7 /* brightStar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = brightStar.png; path = ../../../../Downloads/brightStar.png; sourceTree = "<group>"; };
 		869EA02D7DBAF35178957FA2 /* Pods-Anime.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Anime.release.xcconfig"; path = "Target Support Files/Pods-Anime/Pods-Anime.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -180,9 +178,9 @@
 		6A42D92528BC12B70046DA01 /* pictures */ = {
 			isa = PBXGroup;
 			children = (
-				6AB6CB2F28ECA9B500FA5EE1 /* catSad.png */,
 				6A3E2D3828BA62FC00F13D76 /* AMDetail.png */,
-				6AB6CB3128ECAB3300FA5EE1 /* catIsSoSad.png */,
+				6AB4AF5E2A0A70430090E0FD /* catIsSoSad.png */,
+				6AB4AF5D2A0A70430090E0FD /* catSad.png */,
 				6A3E2D3628BA62FC00F13D76 /* AMMovie.png */,
 				6A3E2D3528BA62FC00F13D76 /* AnimeAppIcon.png */,
 				6A3E2D2F28BA62FC00F13D76 /* FavBG.png */,
@@ -196,7 +194,6 @@
 				6A92B8D028BA9B2A005E5977 /* yellowStar.png */,
 				6A92B8CE28BA9B0C005E5977 /* darkStar.png */,
 				6AF0032F28C601C60069E5E7 /* unfavStar.png */,
-				6AF0033128C601DC0069E5E7 /* brightStar.png */,
 			);
 			path = pictures;
 			sourceTree = "<group>";
@@ -282,12 +279,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				6A3E2D2728BA62E900F13D76 /* LaunchScreen.storyboard in Resources */,
-				6AB6CB3228ECAB3300FA5EE1 /* catIsSoSad.png in Resources */,
 				6A3E2D4228BA62FC00F13D76 /* UnFavBG.png in Resources */,
 				6A3E2D4928BA658C00F13D76 /* GoogleService-Info.plist in Resources */,
 				6A92B8CF28BA9B0C005E5977 /* darkStar.png in Resources */,
 				6A3E2D3F28BA62FC00F13D76 /* textFieldFrame.png in Resources */,
-				6AF0033228C601DC0069E5E7 /* brightStar.png in Resources */,
+				6AB4AF602A0A70430090E0FD /* catIsSoSad.png in Resources */,
 				6A3E2D3C28BA62FC00F13D76 /* FavFrame (1).png in Resources */,
 				6A3E2D4028BA62FC00F13D76 /* AnimeAppIcon.png in Resources */,
 				6A3E2D4128BA62FC00F13D76 /* AMMovie.png in Resources */,
@@ -296,9 +292,9 @@
 				6A3E2D3928BA62FC00F13D76 /* OpenWebbg.png in Resources */,
 				6A3E2D2428BA62E900F13D76 /* Assets.xcassets in Resources */,
 				6A3E2D3E28BA62FC00F13D76 /* starAnime.png in Resources */,
+				6AB4AF5F2A0A70430090E0FD /* catSad.png in Resources */,
 				6A92B8D128BA9B2A005E5977 /* yellowStar.png in Resources */,
 				6A3E2D4328BA62FC00F13D76 /* AMDetail.png in Resources */,
-				6AB6CB3028ECA9B500FA5EE1 /* catSad.png in Resources */,
 				6A3E2D2228BA62E900F13D76 /* Main.storyboard in Resources */,
 				6A3E2D3B28BA62FC00F13D76 /* FavMoviesTitle.png in Resources */,
 				6AF0033028C601C60069E5E7 /* unfavStar.png in Resources */,
